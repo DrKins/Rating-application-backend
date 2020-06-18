@@ -7,8 +7,7 @@ const db = mysql.createConnection({
     host     : 'localhost',
     user     : 'root',
     password : '',
-    database : 'rating'
-   
+    database : 'rating'   
 });
 
 // Connect
@@ -19,6 +18,7 @@ db.connect((err) => {
     console.log('MySql Connected...');
 });
 const router = express.Router();
+
 // Create DB
 router.get('/createdb', (req, res) => {
     let sql = 'CREATE DATABASE rating';
@@ -51,22 +51,6 @@ router.get('/insertreaction/:id', (req, res) => {
      });
 }
 );
-router.get('/vrijeme',(req,res)=>
-{
-    //res.send(timestamp('DD.MM.YYYY - HH:mm:ss'));
-    res.send(timestamp());
-}
-);
-// Insert post 2
-router.get('/addpost2', (req, res) => {
-    let post = {title:'Post Two', body:'This is post number two'};
-    let sql = 'INSERT INTO posts SET ?';
-    let query = db.query(sql, post, (err, result) => {
-        if(err) throw err;
-        console.log(result);
-        res.send('Post 2 added...');
-    });
-});
 
 // Select posts
 router.get('/getreaction', (req, res) => {
@@ -96,14 +80,8 @@ router.get('/getreaction/:id', (req, res) => {
         res.send(result);
     });
 });
-//test/
-router.get('/test/:poruka', (req,res)=>
-{
- res.send(req.params.poruka);
-}
-);
-// Update postpm 
 
+// Update postpm 
 router.put('/getsettings/:poruka/:trajanje/:brojEmotikona', (req, res) => {
     let sql = `UPDATE postavke SET poruka = ${JSON.stringify(req.params.poruka)} , trajanjePoruke = ${req.params.trajanje} , brojEmotikona = ${req.params.brojEmotikona} WHERE id = 1 `;
     let query = db.query(sql, (err, result) => {
@@ -114,8 +92,6 @@ router.put('/getsettings/:poruka/:trajanje/:brojEmotikona', (req, res) => {
 });
 
 // Delete post
-
-
 router.get('/deletereaction/:id', (req, res) => {
     let sql = `DELETE FROM reakcije WHERE id = ${req.params.id}`;
     let query = db.query(sql, (err, result) => {
@@ -124,4 +100,7 @@ router.get('/deletereaction/:id', (req, res) => {
         res.send('REAKCIJA OBRISANA');
     });
 });
+
+
+
 module.exports = router;
