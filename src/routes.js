@@ -19,7 +19,7 @@ db.connect((err) => {
 });
 const router = express.Router();
 
-// Create DB
+// Create DB  -- DA li je ovo potrebno?
 router.get('/createdb', (req, res) => {
     let sql = 'CREATE DATABASE rating';
     db.query(sql, (err, result) => {
@@ -29,7 +29,7 @@ router.get('/createdb', (req, res) => {
     });
 });
 
-// Create table
+// Create table   -- DA li je ovo potrebno?
 router.get('/createtable', (req, res) => {
     let sql = 'CREATE TABLE glasanje(id int AUTO_INCREMENT, title VARCHAR(255), body VARCHAR(255), PRIMARY KEY(id))';
     db.query(sql, (err, result) => {
@@ -100,6 +100,17 @@ router.get('/deletereaction/:id', (req, res) => {
         res.send('REAKCIJA OBRISANA');
     });
 });
+
+// count posts 
+router.get('/countpost/:id', (req, res) => {
+    let sql = `SELECT COUNT(emoticon) AS ispis FROM reakcije WHERE   ${req.params.id} `;
+    let query = db.query(sql, (err, results) => {
+        if(err) throw err;
+        console.log(results[0].ispis);
+        res.send(results[0].ispis);
+    });
+});
+
 
 
 
