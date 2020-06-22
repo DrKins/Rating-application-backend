@@ -101,9 +101,9 @@ router.get('/deletereaction/:id', (req, res) => {
     });
 });
 
-/*funnkcija za getanje poruke */
+/*funkcija za getanje broja emotikona */
 function postavke(){
-    return new Promise((resolve,reject)=>{         
+    return new Promise((resolve,reject)=>{                                      
         db.query(`SELECT brojEmotikona FROM postavke`,(err,result)=>{
             if (err) throw err;
             if(result===undefined)
@@ -116,18 +116,16 @@ function postavke(){
 // count posts 
 router.get('/countreaction', (req, res) => {
 
-    let brojEm = postavke()
+    postavke()
         .then( x => {
             let emotikoni = (varijabla) => {
                 return new Promise((resolve, reject) => {
-                    let temp = [];
-                    for (let i = 1; i <= varijabla; i++) {
+                    let temp = [];                                                              // deklaracija praznog ispisnog niza
+                    for (let i = 1; i <= varijabla; i++) {                                      // petlja koja vrti od 1 do brojEmotikona iz settings tabele u bazi
                         let sql = `SELECT COUNT(emoticon) AS ispis FROM reakcije WHERE emoticon=${i}`;
-                        db.query(sql,(err,result)=>{
+                        db.query(sql,(err,result)=>{                                               //query koji broji pojedinacne reakcije iz baze
                             if (err) throw err;
-                        //  console.log(result[0].ispis);
-                            temp.push(result[0].ispis);
-                        //  console.log(temp);
+                            temp.push(result[0].ispis);                                             //upisivanje prebrojanih vrijednosti u niz za ispis
                             if (temp === undefined)
                             reject(new Error("Undefined"));
                             else{
@@ -136,13 +134,12 @@ router.get('/countreaction', (req, res) => {
                                 }
                             }
                         });
-                    }
-                    
+                    }        
                 });
             };
-            let temp2 = emotikoni(x)
+                emotikoni(x)
                 .then(rezultat => {
-                    res.send(rezultat);
+                    res.send(rezultat);                                             //slanje rezultata brojanja na ispis u frontend
                 })
                 .catch(err => {
                     console.log(err);
@@ -153,8 +150,5 @@ router.get('/countreaction', (req, res) => {
             console.log(err);    
         })
 });
-
-
-
 
 module.exports = router;
