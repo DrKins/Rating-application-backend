@@ -4,10 +4,10 @@ const timestamp = require('time-stamp');
 
 // Create connection
 const db = mysql.createConnection({
-    host     : 'localhost',
-    user     : 'root',
-    password : '',
-    database : 'rating'   
+    host     : 'remotemysql.com',
+    user     : 'xuZXyWb00y',
+    password : 'DQkiFTxMgL',
+    database : 'xuZXyWb00y'   
 });
 
 // Connect
