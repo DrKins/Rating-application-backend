@@ -101,14 +101,57 @@ router.get('/deletereaction/:id', (req, res) => {
     });
 });
 
-// count posts 
-router.get('/countpost/:id', (req, res) => {
-    let sql = `SELECT COUNT(emoticon) AS ispis FROM reakcije WHERE   ${req.params.id} `;
-    let query = db.query(sql, (err, results) => {
-        if(err) throw err;
-        console.log(results[0].ispis);
-        res.send(results[0].ispis);
+/*funnkcija za getanje poruke */
+function postavke(){
+    return new Promise((resolve,reject)=>{         
+        db.query(`SELECT brojEmotikona FROM postavke`,(err,result)=>{
+            if (err) throw err;
+            if(result===undefined)
+            reject (new Error("Result is undefined"));
+            else
+            resolve(JSON.stringify(result[0].brojEmotikona));
+        });
     });
+}
+// count posts 
+router.get('/countreaction', (req, res) => {
+
+    let brojEm = postavke()
+        .then( x => {
+            let emotikoni = (varijabla) => {
+                return new Promise((resolve, reject) => {
+                    let temp = [];
+                    for (let i = 1; i <= varijabla; i++) {
+                        let sql = `SELECT COUNT(emoticon) AS ispis FROM reakcije WHERE emoticon=${i}`;
+                        db.query(sql,(err,result)=>{
+                            if (err) throw err;
+                        //  console.log(result[0].ispis);
+                            temp.push(result[0].ispis);
+                        //  console.log(temp);
+                            if (temp === undefined)
+                            reject(new Error("Undefined"));
+                            else{
+                                if(i==varijabla){
+                                    resolve(temp);
+                                }
+                            }
+                        });
+                    }
+                    
+                });
+            };
+            let temp2 = emotikoni(x)
+                .then(rezultat => {
+                    res.send(rezultat);
+                })
+                .catch(err => {
+                    console.log(err);
+                    
+                });
+        })
+        .catch( err => {
+            console.log(err);    
+        })
 });
 
 
