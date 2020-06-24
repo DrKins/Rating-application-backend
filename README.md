@@ -22,18 +22,30 @@ Development is running at http://localhost:5000 by default.
 Routes:
 ## Reactions
 `/api/reactions`
+
 `/getreaction/:id` expects a number in the parameter returns an object (GET request)
+
 `/insertreaction`  expects an object in the body of the request (POST request) {"id":number}
+
 `/deletereaction/:id` expects a number in the parameter returns 200 (GET request)
+
 `/countreaction` expects nothing returns array (GET request)
+
 `/countreactions/:date`expects time-stamp formated (YYYYMMDD) returns number (GET request)
+
 ## Settings 
 `/api/settings`
+
 `/getsettings` expects nothing returns object (GET request)
+
 `/setsettings` expects object returns 200{"id":1,"poruka":"string","trajanje":int,"brojEmotikona":int}(POST request)
+
 ## User
 `/api/user`
+
 `/register` expects object returns 201 {"username":"string","password":"string"}
+
 `/login` expects object returns boolean {"username":"string","password":"string"}
+
 
 
