@@ -1,3 +1,6 @@
 node_modules
 
 .env
+.jshintrc
+server.cert
+server.key

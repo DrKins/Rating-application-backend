@@ -4,18 +4,15 @@ const mysql = require('mysql');
 //      creating db connection
 
 const connection = require('../methods/dbConnect');
-
+//      Import querry structure
+const sql = require('./sql');
 class Queries{
-    constructor(table_name){
-        this.table_name = table_name;
-    }
+   
     //      Getting reactions
     GetReactions(){
         return new Promise((resolve, reject) =>{
             const db = connection.createConn();
-            const sql = `SELECT * FROM ${this.table_name}`;
-
-            db.query(sql, (err, result) => {
+            db.query(sql.selectall,this.table_name, (err, result) => {
                 if (err) throw err;
         
                 if (result === undefined)
@@ -30,9 +27,7 @@ class Queries{
     GetReactionbyID(react_id){
         return new Promise((resolve, reject) =>{
             const db = connection.createConn();
-            const sql = `SELECT * FROM ${this.table_name} WHERE id=${react_id}`;
-
-            db.query(sql, (err, result) => {
+            db.query(sql.selectbyid,react_id,(err, result) => {
                 if (err) throw err;
         
                 if (result === undefined)
@@ -40,23 +35,22 @@ class Queries{
                 else
                   resolve(JSON.stringify(result));
               });
-        db.end((err)=> console.log("Connection closed"))
+              db.end((err)=> console.log("Connection closed"))       
         });
+        
     }
     //      Getting settings
     GetSettings(){
         return new Promise((resolve,reject) =>{
             const db = connection.createConn();
-            const sql = `SELECT * FROM ${this.table_name}`;
-
-            db.query(sql, (err,result) => {
+            db.query(sql.selectsettings, (err,result) => {
                 if(err) throw err;
-
                 if (result === undefined)
-                    reject(new Error("Result is undefined."));
+                  reject(new Error("Result is undefined."));
                 else
                     resolve(JSON.stringify(result));
             });
+            db.end((err)=> console.log("Connection closed"))            
         })
     }
     //      Getting number of reactions 
@@ -66,13 +60,11 @@ class Queries{
             const db = connection.createConn();
             for (let i = 1; i <= emoticon_count; i++) { // petlja koja vrti od 1 do brojEmotikona iz settings tabele u bazi
                
-                let sql = `SELECT COUNT(emoticon) AS ispis FROM ${this.table_name} WHERE emoticon='${i}'`;
-                
-                db.query(sql, (err, result) => { // query koji broji pojedinacne reakcije iz baze
+               
+                db.query(sql.countreaction,i ,(err, result) => { // query koji broji pojedinacne reakcije iz baze
                     if (err) 
                         throw err;
-                    
-                    temp.push(result[0].ispis); // upisivanje prebrojanih vrijednosti u niz za ispis
+                   temp.push(result[0].ispis); // upisivanje prebrojanih vrijednosti u niz za ispis
                     if (temp === undefined) 
                         reject(new Error("Undefined"));
                      else {
@@ -80,7 +72,7 @@ class Queries{
                             resolve(temp);
                         }
                     }
-                });
+                }); 
             }
             db.end((err) => console.log("Connection closed"));
         });
@@ -90,8 +82,7 @@ class Queries{
         return new Promise((resolve, reject) => {
             const db = connection.createConn();
             
-                let sql = `SELECT COUNT(emoticon) AS ispis FROM reakcije WHERE date =${date}`;
-                db.query(sql, (err, result) => { 
+                db.query(sql.countreactionbydate,date ,(err, result) => { 
                     if (err) throw err;
                     if (result === undefined) 
                         reject(new Error("Undefined"));
@@ -106,7 +97,7 @@ class Queries{
     GetUserbyName(name) {
         return new Promise((resolve, reject) => {
             const db = connection.createConn();
-            db.query(`SELECT * FROM users WHERE name='${name}'`, (err, result) => {
+            db.query(sql.getuserbyname,[name ],(err, result) => {
                 if (err) 
                     throw err;
     
@@ -123,20 +114,15 @@ class Queries{
     //      Inserting one reaction
     InsertReaction(req_obj){
         const db = connection.createConn();
-        const sql = `INSERT INTO ${this.table_name}(date,emoticon) VALUES('${req_obj.date}','${req_obj.reaction}')`
-        console.log(sql);
-        db.query(sql,(err,result) => {
+        db.query(sql.insertreaction,[req_obj.date,req_obj.reaction],(err,result) => {
             if(err) throw err;
         });
         db.end((err) => console.log("Connection closed"));
-
     }
     //      Updating settings
     UpdateSetting(req_obj){
-           const db = connection.createConn();
-           const sql = `UPDATE postavke SET poruka = '${req_obj.poruka}' , trajanjePoruke = ${req_obj.trajanje} , brojEmotikona = ${req_obj.brojEmotikona}`;
-        
-            db.query(sql,(err,result) => {
+           const db = connection.createConn();        
+            db.query(sql.updatesettings,[req_obj.poruka,req_obj.trajanje,req_obj.brojEmotikona],(err,result) => {
                 if (err) throw err;
             });
             db.end((err) => console.log("Connection closed"));       
@@ -144,8 +130,7 @@ class Queries{
     //      Create new user
     CreateNewUser(req_obj){
         const db = connection.createConn();
-        const sql = `INSERT INTO ${this.table_name} (name, password) VALUES ('${req_obj.username}','${req_obj.password}')`;
-        db.query(sql, (err, result) => {
+        db.query(sql.createuser,[req_obj.username,req_obj.password] ,(err, result) => {
             if (err) throw err;
         });
         db.end((err) => console.log("Connection closed"));
@@ -153,9 +138,7 @@ class Queries{
     //      Delete reaction
     DeleteReaction(id){
         const db= connection.createConn();
-        const sql = `DELETE FROM reakcije WHERE id = ${id}`;
-
-        db.query(sql,(err,result) => {
+        db.query(sql.deletereacion,id,(err,result) => {
             if (err) throw err;
         })
         db.end((err) => console.log("Connection closed"));        
