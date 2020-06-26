@@ -11,14 +11,14 @@ const Reaction = require('../models/Reaction.js');
 const Queries = require('../querries/Queries');
 const router = express.Router();
 //      Loading methods
-const VerifyToken = require('../methods/VerifyToken');
+
 const verification = require('../methods/VerifyToken');
 
 
 let queries = new Queries();
 let settings = new Queries()
 //      Getting all reactions as a response
-router.get('/getreactions',VerifyToken.ver,(req,res)=>{  
+router.get('/getreactions',verification.ver,(req,res)=>{  
     jwt.verify(req.token,process.env.PRIVATE_KEY,(err,AuthData)=> {
         if(err){
             res.sendStatus(403);
@@ -72,7 +72,7 @@ router.get('/deletereaction/:id',verification.ver,(req,res) => {
     })
 }); 
 //      Count reactions returns an array
-router.get('/countreaction',(req,res) =>{
+router.get('/countreaction',verification.ver,(req,res) =>{
     jwt.verify(req.token,process.env.PRIVATE_KEY,(err,AuthData)=> {
         if(err){
             res.sendStatus(403);
@@ -98,7 +98,7 @@ router.get('/countreaction',(req,res) =>{
 });
 
 //      Counts all reactions an integer
-router.get('/countreactions/:date',(req,res) =>{
+router.get('/countreactions/:date',verification.ver,(req,res) =>{
     jwt.verify(req.token,process.env.PRIVATE_KEY,(err,AuthData)=> {
         if(err){
             res.sendStatus(403);

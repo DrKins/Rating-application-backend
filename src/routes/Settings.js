@@ -2,6 +2,8 @@
 
 const express = require('express');
 const timestamp = require('time-stamp');
+//      Loading methods
+const verification = require('../methods/VerifyToken');
 
 //      Loading Querries
 const Queries = require('../querries/Queries');
@@ -20,7 +22,7 @@ router.get('/getsettings',(req,res) => {
       });
 });
 
-router.post('/setsettings',(req,res) => {
+router.post('/setsettings',verification.ver,(req,res) => {
     jwt.verify(req.token,process.env.PRIVATE_KEY,(err,AuthData)=> {
         if(err){
             res.sendStatus(403);
