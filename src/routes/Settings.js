@@ -10,20 +10,14 @@ let queries = new Queries();
 const router = express.Router();
 
 router.get('/getsettings',(req,res) => {
-    jwt.verify(req.token,process.env.PRIVATE_KEY,(err,AuthData)=> {
-        if(err){
-            res.sendStatus(403);
-        }else{
-            queries.GetSettings()
-            .then(result => {
-                res.status(200);
-                res.end(result);
-            })
-            .catch(err => {
-                console.log(err);
-              });
-        }
+    queries.GetSettings()
+    .then(result => {
+        res.status(200);
+        res.end(result);
     })
+    .catch(err => {
+        console.log(err);
+      });
 });
 
 router.post('/setsettings',(req,res) => {
