@@ -21,12 +21,12 @@ let queries = new Queries();
 let settings = new Queries()
 //      Getting all reactions as a response
 router.get('/getreactions',verification.ver,(req,res)=>{  
-    jwt.verify(req.token,fs.readFileSync(config.location_key),(err,AuthData)=> {
+    jwt.verify(req.token,config.privkey,(err,AuthData)=> {
         if(err){
             res.sendStatus(403);
         }else{
         if(AuthData.user[0].lvl>1){
-            queries.GetReactions()
+            queries.GetReactions(AuthData.user[0].company)
             .then(result => {
                 res.status(200);
                 res.end(result);
@@ -41,12 +41,12 @@ router.get('/getreactions',verification.ver,(req,res)=>{
 });
 //      Getting reaction by ID as a response
 router.get('/getreaction/:id',verification.ver,(req,res)=>{
-    jwt.verify(req.token,fs.readFileSync(config.location_key),(err,AuthData)=> {
+    jwt.verify(req.token,config.privkey,(err,AuthData)=> {
         if(err){
             res.sendStatus(403);
         }else{
             if(AuthData.user[0].lvl>1){
-            queries.GetReactionbyID(req.params.id)
+            queries.GetReactionbyID(req.params.id,AuthData.user[0].company)
             .then(result => {
                 res.status(200);
                 res.end(result);
@@ -60,21 +60,28 @@ router.get('/getreaction/:id',verification.ver,(req,res)=>{
     })
 });
 //      Inserting a reaction
-router.post('/insertreaction',(req,res) => {
-    const reaction = new Reaction(timestamp('YYYYMMDD'),req.body.id)
-    queries.InsertReaction(reaction);
-    console.log("Reaction sent");
-    res.status(200).send();
+router.post('/insertreaction',verification.ver,(req,res) => {
+    jwt.verify(req.token,config.privkey,(err,AuthData)=> {
+        if(err){
+            res.sendStatus(403);
+        }else{
+            const reaction = new Reaction(timestamp('YYYYMMDD'),req.body.id,AuthData.user[0].company);
+            queries.InsertReaction(reaction);
+            console.log("Reaction sent");
+            res.status(200).send(); 
+        }
+    })
 });
+/**/
 
 //      Deleting a reaction
 router.get('/deletereaction/:id',verification.ver,(req,res) => {
-    jwt.verify(req.token,fs.readFileSync(config.location_key),(err,AuthData)=> {
+    jwt.verify(req.token,config.privkey,(err,AuthData)=> {
         if(err){
             res.sendStatus(403);
         }else{
             if(AuthData.user[0].lvl>1){
-            queries.DeleteReaction(req.params.id);
+            queries.DeleteReaction(req.params.id,AuthData.user[0].company);
             console.log("Reaction deleted");
             res.status(200).send();
         }else 
@@ -84,16 +91,16 @@ router.get('/deletereaction/:id',verification.ver,(req,res) => {
 }); 
 //      Count reactions returns an array
 router.get('/countreaction',verification.ver,(req,res) =>{
-    jwt.verify(req.token,fs.readFileSync(config.location_key),(err,AuthData)=> {
+    jwt.verify(req.token,config.privkey,(err,AuthData)=> {
         if(err){
             res.sendStatus(403);
         }else{
             if(AuthData.user[0].lvl>1){
-            settings.GetSettings()
+            settings.GetSettings(AuthData.user[0].company)
             .then(result => {
                 const broj_emotikona = JSON.parse(result)[0].brojEmotikona;
-                console.log(broj_emotikona);
-                queries.CountReactions(broj_emotikona)
+                console.log(AuthData.user[0]);
+                queries.CountReactions(broj_emotikona,AuthData.user[0].company)
                 .then(count => {
                     res.status(200);
                     res.end(JSON.stringify(count));
@@ -113,12 +120,12 @@ router.get('/countreaction',verification.ver,(req,res) =>{
 
 //      Counts all reactions an integer
 router.get('/countreactions/:date',verification.ver,(req,res) =>{
-    jwt.verify(req.token,fs.readFileSync(config.location_key),(err,AuthData)=> {
+    jwt.verify(req.token,config.privkey,(err,AuthData)=> {
         if(err){
             res.sendStatus(403);
         }else{
             if(AuthData.user[0].lvl>1){
-            queries.CountReactionsbyDate(req.params.date)
+            queries.CountReactionsbyDate(req.params.date,AuthData.user[0].company)
             .then(result => {
                 res.status(200);
                 res.end(JSON.stringify(result));

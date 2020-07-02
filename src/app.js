@@ -29,7 +29,7 @@ app.use('/api/users/',users);
 
 
 http.createServer(app).listen(config.port, () => {
-  console.log(`Listening on ${config.port}`)
+  console.log(`Listening on ${config.port}`);
 })
 
 https.createServer({

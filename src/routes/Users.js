@@ -19,15 +19,15 @@ const router = express.Router()
 let queries = new Queries();
 
 router.post('/register',async (req,res) =>{
-    try{
+   
         const HashedPW =await bcrypt.hash(req.body.password,10);
-        const user =  new User(req.body.username,HashedPW);
+        const user =  new User(req.body.username,HashedPW,req.body.level,req.body.company);
+        console.log(user);
+        
         queries.CreateNewUser(user);
         console.log("User created");
         res.sendStatus(201);
-    }catch{
-      res.sendStatus(400);
-    }
+
 
 });
 
@@ -38,9 +38,9 @@ router.post('/login',(req,res) =>{
         const user = JSON.parse(response);
         try{
         await bcrypt.compare(req.body.password, user[0].password,(err,succes)=>{
-        if (err) { return error(err) }           
+        if (err) { res.sendStatus(403)}           
         if(succes==true){
-            jwt.sign({user},fs.readFileSync(config.location_key),(err,token)=>{
+            jwt.sign({user},config.privkey,(err,token)=>{
                 res.json({
                     token
                 })
@@ -61,7 +61,7 @@ router.post('/login',(req,res) =>{
 });
 ///////////////////////////Test routes////////////////////////////////////////////
 router.get('/test',VerifyToken.ver,(req,res) => {
-    jwt.verify(req.token,fs.readFileSync(config.location_key),(err,AuthData)=> {
+    jwt.verify(req.token,config.privkey,(err,AuthData)=> {
         if(err){
             res.sendStatus(403);
         }else{
