@@ -1,12 +1,14 @@
 //      loading env file
-require('dotenv').config();
+const config = require('../config');
 
 //      loading dependencies
 const express = require('express');
 const bodyParser = require('body-parser')
 const cors = require('cors');
 const https = require('https');
-const fs = require('fs')
+const http = require('http');
+const fs = require('fs');
+
 
  //     initializing express
  
@@ -14,11 +16,6 @@ const app = express();
 //      loading middleware
 app.use(bodyParser.json());
 app.use(cors());
- //     Testing 
- const httpsServer = https.createServer({
-    key: fs.readFileSync('server.key'),
-    cert: fs.readFileSync('server.cert')
-  },app);
 
 //      Loading routes
 const settings = require('./routes/Settings');
@@ -30,12 +27,15 @@ app.use('/api/settings/',settings);
 app.use('/api/reactions/',reactions);
 app.use('/api/users/',users);
 
-const port = process.env.PORT 
 
-app.listen(port, () => {
-    console.log(`Listening on Port ${port}`);
-});
-const port2 = 5000;
-httpsServer.listen(port2,()=>{
-    console.log("https running");
+http.createServer(app).listen(config.port, () => {
+  console.log(`Listening on ${config.port}`)
+})
+
+https.createServer({
+  key: fs.readFileSync(config.location_key),
+  cert: fs.readFileSync(config.location_cert),
+  ca: fs.readFileSync(config.location_chain)
+}, app).listen(config.port2, () => {
+  console.log(`Listening on ${config.port2}`);
 })
