@@ -4,7 +4,7 @@
   "description": "bekend aplikacija za rating-app",
   "main": "app.js",
   "scripts": {
-    "start": "node src/app.js",
+    "start": "node ./src/app.js",
     "dev": "nodemon src/app.js"
   },
   "repository": {
@@ -25,6 +25,7 @@
     "jsonwebtoken": "^8.5.1",
     "mysql": "^2.18.1",
     "nodemon": "^2.0.4",
+    "path": "^0.12.7",
     "time-stamp": "^2.2.0",
     "uuid": "^8.2.0"
   }

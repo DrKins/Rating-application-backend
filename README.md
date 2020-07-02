@@ -9,7 +9,7 @@ Full-stack application for rating the quality of service rendered. The applicati
 
 ## Start
 
-First step is to create a file called `.env` in root directory. Follow instructions in `envexample` to create its content. DB credentials will be provided on demand.
+All sensitive variables stored in config.js encrypted with transcrypt clone the repo then contact rmvc-mirza to get the transcrypt info
 
 Run server with:
 `npm run start`
@@ -17,7 +17,11 @@ Run server with:
 or using nodemon for development run:
 `npm run dev`
 
-Development is running at http://localhost:5000 by default.
+Development is running at http://localhost:80 by default.
+
+In localhost you need to comment out https server start in app.js
+
+Current working version running @ https://praksans.dyndns.org:443/
 
 Routes:
 ## Reactions
@@ -43,9 +47,9 @@ Routes:
 ## User
 `/api/user`
 
-`/register` expects object returns 201 {"username":"string","password":"string"}
+`/register` expects object returns 201 {"username":"string","password":"string","level":int,"company":"string"}
 
-`/login` expects object returns boolean {"username":"string","password":"string"}
+`/login` expects object returns token in format {"token":"string"} {"username":"string","password":"string"}
 
 
 

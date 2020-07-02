@@ -9,10 +9,10 @@ const sql = require('./sql');
 class Queries{
    
     //      Getting reactions
-    GetReactions(){
+    GetReactions(company){
         return new Promise((resolve, reject) =>{
             const db = connection.createConn();
-            db.query(sql.selectall,this.table_name, (err, result) => {
+            db.query(sql.selectall,[this.table_name,company], (err, result) => {
                 if (err) throw err;
         
                 if (result === undefined)
@@ -24,10 +24,10 @@ class Queries{
         });
     }
     //      Getting a single reaction by ID
-    GetReactionbyID(react_id){
+    GetReactionbyID(react_id,company){
         return new Promise((resolve, reject) =>{
             const db = connection.createConn();
-            db.query(sql.selectbyid,react_id,(err, result) => {
+            db.query(sql.selectbyid,[react_id,company],(err, result) => {
                 if (err) throw err;
         
                 if (result === undefined)
@@ -40,10 +40,10 @@ class Queries{
         
     }
     //      Getting settings
-    GetSettings(){
+    GetSettings(company){
         return new Promise((resolve,reject) =>{
             const db = connection.createConn();
-            db.query(sql.selectsettings, (err,result) => {
+            db.query(sql.selectsettings,company,(err,result) => {
                 if(err) throw err;
                 if (result === undefined)
                   reject(new Error("Result is undefined."));
@@ -54,14 +54,13 @@ class Queries{
         })
     }
     //      Getting number of reactions 
-    CountReactions(emoticon_count){
+    CountReactions(emoticon_count,company){
         return new Promise((resolve, reject) => {
             let temp = []; // deklaracija praznog ispisnog niza
             const db = connection.createConn();
             for (let i = 1; i <= emoticon_count; i++) { // petlja koja vrti od 1 do brojEmotikona iz settings tabele u bazi
                
-               
-                db.query(sql.countreaction,i ,(err, result) => { // query koji broji pojedinacne reakcije iz baze
+                db.query(sql.countreaction,[i,company],(err, result) => { // query koji broji pojedinacne reakcije iz baze
                     if (err) 
                         throw err;
                    temp.push(result[0].ispis); // upisivanje prebrojanih vrijednosti u niz za ispis
@@ -78,11 +77,11 @@ class Queries{
         });
     }
     //      Getting number of reactions by date
-    CountReactionsbyDate(date){
+    CountReactionsbyDate(date,company){
         return new Promise((resolve, reject) => {
             const db = connection.createConn();
             
-                db.query(sql.countreactionbydate,date ,(err, result) => { 
+                db.query(sql.countreactionbydate,[date,company],(err, result) => { 
                     if (err) throw err;
                     if (result === undefined) 
                         reject(new Error("Undefined"));
@@ -97,7 +96,7 @@ class Queries{
     GetUserbyName(name) {
         return new Promise((resolve, reject) => {
             const db = connection.createConn();
-            db.query(sql.getuserbyname,[name ],(err, result) => {
+            db.query(sql.getuserbyname,[name],(err, result) => {
                 if (err) 
                     throw err;
     
@@ -112,17 +111,17 @@ class Queries{
         });
         }
     //      Inserting one reaction
-    InsertReaction(req_obj){
+    InsertReaction(req_obj,company){
         const db = connection.createConn();
-        db.query(sql.insertreaction,[req_obj.date,req_obj.reaction],(err,result) => {
+        db.query(sql.insertreaction,[req_obj.date,req_obj.reaction,company],(err,result) => {
             if(err) throw err;
         });
         db.end((err) => console.log("Connection closed"));
     }
     //      Updating settings
-    UpdateSetting(req_obj){
+    UpdateSetting(req_obj,company){
            const db = connection.createConn();        
-            db.query(sql.updatesettings,[req_obj.poruka,req_obj.trajanje,req_obj.brojEmotikona],(err,result) => {
+            db.query(sql.updatesettings,[req_obj.poruka,req_obj.trajanje,req_obj.brojEmotikona,company],(err,result) => {
                 if (err) throw err;
             });
             db.end((err) => console.log("Connection closed"));       
@@ -130,15 +129,15 @@ class Queries{
     //      Create new user
     CreateNewUser(req_obj){
         const db = connection.createConn();
-        db.query(sql.createuser,[req_obj.username,req_obj.password] ,(err, result) => {
+        db.query(sql.createuser,[req_obj.username,req_obj.password,req_obj.lvl,req_obj.company] ,(err, result) => {
             if (err) throw err;
         });
         db.end((err) => console.log("Connection closed"));
     }
     //      Delete reaction
-    DeleteReaction(id){
+    DeleteReaction(id,company){
         const db= connection.createConn();
-        db.query(sql.deletereacion,id,(err,result) => {
+        db.query(sql.deletereacion,[id,company],(err,result) => {
             if (err) throw err;
         })
         db.end((err) => console.log("Connection closed"));        
