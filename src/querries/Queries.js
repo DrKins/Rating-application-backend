@@ -100,9 +100,9 @@ class Queries{
                 if (err) 
                     throw err;
     
-                if (result.length==0) 
-                    reject(new Error("Cannot find user"));
-                else if(result == undefined)
+                //if (result.length==0) 
+                  //  reject(new Error("Cannot find user"));
+                 if(result == undefined)
                     reject(new Error("Response is undefined"));
                 else 
                     resolve(JSON.stringify(result));
