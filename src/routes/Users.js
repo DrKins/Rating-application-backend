@@ -14,22 +14,62 @@ const VerifyToken = require('../methods/VerifyToken');
 //      Loading Querries
 
 const Queries = require('../querries/Queries');
+const verification = require('../methods/VerifyToken');
 
 const router = express.Router()
 let queries = new Queries();
 
-router.post('/register',async (req,res) =>{
+router.post('/register',verification.ver,async (req,res) =>{
    
-        const HashedPW =await bcrypt.hash(req.body.password,10);
-        const user =  new User(req.body.username,HashedPW,req.body.level,req.body.company);
-        console.log(user);
-        
-        queries.CreateNewUser(user);
-        console.log("User created");
-        res.sendStatus(201);
+    jwt.verify(req.token,config.privkey,async (err,AuthData)=> {
+        if(err){
+            res.sendStatus(403);
+        }else{
+            queries.GetUserbyName(req.body.username)
+            .then(async(result) =>{
+              if (result!="[]"){
+                 res.sendStatus(400);
+              }
+                else{
+               
+                if(AuthData.user[0].lvl==1){
+               
+                    res.sendStatus(403);
+                }else if(AuthData.user[0].lvl==2){
+                    const HashedPW =await bcrypt.hash(req.body.password,10);
+                    const user =  new User(req.body.username,HashedPW,1,AuthData.user[0].company);
+                    console.log(user);
+    
+                    queries.CreateNewUser(user);
+                    console.log("User created");
+                    res.sendStatus(201);
+                }else if(AuthData.user[0].lvl==3){
+                    const HashedPW =await bcrypt.hash(req.body.password,10);
+                    const user =  new User(req.body.username,HashedPW,req.body.level,req.body.company);
+                    console.log(user);
+    
+                    queries.CreateNewUser(user);
+                    console.log("User created");
+                    res.sendStatus(201);
+                }else{
+                  
+                    res.sendStatus(403);
+                
+              }
+            } 
+            })
+            .catch(err =>{
+                res.send(err);
+            })
+            
+
+       }
+   })
 
 
 });
+
+
 
 router.post('/login',(req,res) =>{
     queries.GetUserbyName(req.body.username)

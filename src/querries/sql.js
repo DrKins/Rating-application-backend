@@ -12,3 +12,12 @@ const sql ={
 }
 
 module.exports = sql;
+
+
+
+/*
+Novi level admina 3 master admin gotovo
+register moze samo 3 za admine a 2 za usere  gotovo
+register zabranit dupla imena gotovo gotovo
+promjenit bazu podataka da je na insanskom jeziku aka englesh 
+*/

@@ -11,9 +11,10 @@ let queries = new Queries();
 
 const router = express.Router();
 
-router.get('/getsettings',(req,res) => {
+router.get('/getsettings',verification.ver,(req,res) => {
     jwt.verify(req.token,config.privkey,(err,AuthData)=> {
         if(err){
+
             res.sendStatus(403);
         }else{
             queries.GetSettings(AuthData.user[0].company)
