@@ -31,11 +31,11 @@ app.use('/api/users/',users);
 http.createServer(app).listen(config.port, () => {
   console.log(`Listening on ${config.port}`);
 })
-
+/*
 https.createServer({
   key: fs.readFileSync(config.location_key),
   cert: fs.readFileSync(config.location_cert),
   ca: fs.readFileSync(config.location_chain)
 }, app).listen(config.port2, () => {
   console.log(`Listening on ${config.port2}`);
-})
+})*/
