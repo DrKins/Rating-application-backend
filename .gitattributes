@@ -1,1 +1,4 @@
 config.js  filter=crypt diff=crypt merge=crypt
+Dockerfile  filter=crypt diff=crypt merge=crypt
+Docker-compose.yml  filter=crypt diff=crypt merge=crypt
+mysql/database.sql  filter=crypt diff=crypt merge=crypt

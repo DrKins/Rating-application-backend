@@ -1,0 +1,14 @@
+{
+  "apps": [
+    {
+      "name": "rating-app",
+      "script": "src/app.js",
+      "exec_mode": "cluster",
+      "watch": false,
+      "ignore_watch": [
+        "node_modules"
+      ],
+      "instances": 4
+    }
+  ]
+}

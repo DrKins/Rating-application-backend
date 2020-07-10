@@ -32,12 +32,13 @@ router.post('/register',verification.ver,async (req,res) =>{
               }
                 else{
                
-                if(AuthData.user[0].lvl==1){
-               
+                if(AuthData.user[0].lvl==1){ //this if and its elses are used for the leveling system could 
+                                             //possibly be substituted with a switch case
                     res.sendStatus(403);
                 }else if(AuthData.user[0].lvl==2){
                     const HashedPW =await bcrypt.hash(req.body.password,10);
-                    const user =  new User(req.body.username,HashedPW,1,AuthData.user[0].company);
+                    if(req.body.level>2){res.sendStatus(403)}
+                    const user =  new User(req.body.username,HashedPW,req.body.level,AuthData.user[0].company);
                     console.log(user);
     
                     queries.CreateNewUser(user);

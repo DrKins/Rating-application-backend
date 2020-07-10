@@ -65,6 +65,7 @@ router.post('/insertreaction',verification.ver,(req,res) => {
         if(err){
             res.sendStatus(403);
         }else{
+            console.log(AuthData);
             const reaction = new Reaction(timestamp('YYYYMMDD'),req.body.id,AuthData.user[0].company);
             queries.InsertReaction(reaction);
             console.log("Reaction sent");
@@ -98,9 +99,9 @@ router.get('/countreaction',verification.ver,(req,res) =>{
             if(AuthData.user[0].lvl>1){
             settings.GetSettings(AuthData.user[0].company)
             .then(result => {
-                const broj_emotikona = JSON.parse(result)[0].brojEmotikona;
+                const emoticonCount = JSON.parse(result)[0].emoticonCount;
                 console.log(AuthData.user[0]);
-                queries.CountReactions(broj_emotikona,AuthData.user[0].company)
+                queries.CountReactions(emoticonCount,AuthData.user[0].company)
                 .then(count => {
                     res.status(200);
                     res.end(JSON.stringify(count));

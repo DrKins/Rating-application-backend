@@ -63,7 +63,7 @@ class Queries{
                 db.query(sql.countreaction,[i,company],(err, result) => { // query koji broji pojedinacne reakcije iz baze
                     if (err) 
                         throw err;
-                   temp.push(result[0].ispis); // upisivanje prebrojanih vrijednosti u niz za ispis
+                   temp.push(result[0].output); // upisivanje prebrojanih vrijednosti u niz za ispis
                     if (temp === undefined) 
                         reject(new Error("Undefined"));
                      else {
@@ -113,7 +113,7 @@ class Queries{
     //      Inserting one reaction
     InsertReaction(req_obj,company){
         const db = connection.createConn();
-        db.query(sql.insertreaction,[req_obj.date,req_obj.reaction,company],(err,result) => {
+        db.query(sql.insertreaction,[req_obj.date,req_obj.reaction,req_obj.company],(err,result) => {
             if(err) throw err;
         });
         db.end((err) => console.log("Connection closed"));
@@ -121,7 +121,7 @@ class Queries{
     //      Updating settings
     UpdateSetting(req_obj,company){
            const db = connection.createConn();        
-            db.query(sql.updatesettings,[req_obj.poruka,req_obj.trajanje,req_obj.brojEmotikona,company],(err,result) => {
+            db.query(sql.updatesettings,[req_obj.message,req_obj.duration,req_obj.emoticonCount,company],(err,result) => {
                 if (err) throw err;
             });
             db.end((err) => console.log("Connection closed"));       
