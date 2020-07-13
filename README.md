@@ -35,7 +35,7 @@ Routes:
 
 `/countreaction` expects nothing returns array (GET request)
 
-`/countreactions/:date`expects time-stamp formated (YYYYMMDD) returns number (GET request)
+`/countreactions/:date`expects time-stamp formated (YYYYMMDD) returns array (GET request)
 
 ## Settings 
 `/api/settings`

@@ -79,19 +79,23 @@ class Queries{
     //      Getting number of reactions by date
     CountReactionsbyDate(date,company){
         return new Promise((resolve, reject) => {
+            let temp = []; // deklaracija praznog ispisnog niza
             const db = connection.createConn();
-            
-                db.query(sql.countreactionbydate,[date,company],(err, result) => { 
+            for (let i = 1; i <= emoticon_count; i++) { // petlja koja vrti od 1 do brojEmotikona iz settings tabele u bazi
+               
+                db.query(sql.countreactionbydate,[date,i,company],(err, result) => { 
                     if (err) throw err;
                     if (result === undefined) 
                         reject(new Error("Undefined"));
                      else
-                        resolve(result);
-                        db.end((err) => console.log("Connection closed"));
+                       temp.push(result);
                 });
-            
+            }
+            resolve(temp);
+            db.end((err) => console.log("Connection closed"));
         });
     }
+
     //      Geting user by name
     GetUserbyName(name) {
         return new Promise((resolve, reject) => {
@@ -133,6 +137,13 @@ class Queries{
             if (err) throw err;
         });
         db.end((err) => console.log("Connection closed"));
+    }
+    CreateSettings(company){
+        const db = connection.createConn();
+        db.query(sql.CreateSettings,["Hvala na glasanju",5,5,company],(err,result) => {
+            if(err) throw err;
+        });
+        db.end((err)=> console.log("Connection closed"));
     }
     //      Delete reaction
     DeleteReaction(id,company){
