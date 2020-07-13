@@ -81,9 +81,11 @@ router.post('/login',(req,res) =>{
         await bcrypt.compare(req.body.password, user[0].password,(err,succes)=>{
         if (err) { res.sendStatus(403)}           
         if(succes==true){
+            let lvl =user[0].lvl
             jwt.sign({user},config.privkey,(err,token)=>{
                 res.json({
-                    token
+                    token,
+                    "level":lvl
                 })
                 res.send();
             }); 
