@@ -25,9 +25,11 @@ router.post('/register', verification.ver, async (req, res) => {
         if (err) {
             res.sendStatus(403);
         } else {
-            if(queries.GetSettings(req.body.company)===undefined){
+            queries.GetSettings(req.body.company).then((result)=>{
+                if(result==="[]"){
                 queries.CreateSettings(req.body.company);
-            }
+                }
+            })
             queries.GetUserbyName(req.body.username).then(async (result) => {
                 if (result != "[]") {
                     res.sendStatus(400);

@@ -140,7 +140,7 @@ class Queries{
     }
     CreateSettings(company){
         const db = connection.createConn();
-        db.query(sql.CreateSettings,["Hvala na glasanju",5,5,company],(err,result) => {
+        db.query(sql.createsetting,["Hvala na glasanju",5,5,company],(err,result) => {
             if(err) throw err;
         });
         db.end((err)=> console.log("Connection closed"));
