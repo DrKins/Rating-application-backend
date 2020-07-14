@@ -44,8 +44,8 @@ Routes:
 
 `/setsettings` expects object returns 200{"id":1,"poruka":"string","trajanje":int,"brojEmotikona":int}(POST request)
 
-## User
-`/api/user`
+## Users
+`/api/users`
 
 `/register` expects object returns 201 {"username":"string","password":"string","level":int,"company":"string"}
 
