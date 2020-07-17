@@ -26,9 +26,9 @@ router.post('/register', verification.ver, async (req, res) => {
         if (err) {
             res.sendStatus(403);
         } else {
-            queries.GetSettings(req.body.company).then((result)=>{
-                if(result==="[]"){
-                queries.CreateSettings(req.body.company);
+            queries.GetSettings(req.body.company).then((result) => {
+                if (result === "[]") {
+                    queries.CreateSettings(req.body.company);
                 }
             })
             queries.GetUserbyName(req.body.username).then(async (result) => {
@@ -74,20 +74,19 @@ router.post('/register', verification.ver, async (req, res) => {
 
 router.post('/login', (req, res) => {
     Useri.findOne({
-        where:{
-       name: req.body.username
-        }
-    }).then(async response => {
+            where: {
+                name: req.body.username
+            }
+        }).then(async response => {
+
                 try {
-                    await bcrypt.compare(req.body.password, user[0].password, (err, succes) => {
+                    await bcrypt.compare(req.body.password, response.dataValues.password, (err, succes) => {
                         if (err) {
                             res.sendStatus(403)
                         }
                         if (succes == true) {
-                            let lvl = user[0].lvl
-                            jwt.sign({
-                                user
-                            }, config.privkey, (err, token) => {
+                            let lvl = response.dataValues.lvl;
+                            jwt.sign(response.dataValues, config.privkey, (err, token) => {
                                 res.json({token, "level": lvl})
                                 res.send();
                             });
@@ -100,8 +99,8 @@ router.post('/login', (req, res) => {
                 }}
         ).catch(err => {
             console.log(err);
-        })
-});
+        })}
+);
 
 // /////////////////////////Test routes////////////////////////////////////////////router.get('/test', VerifyToken.ver, (req, res) => {
 // jwt.verify(req.token, config.privkey, (err, AuthData) => {
@@ -112,4 +111,4 @@ router.post('/login', (req, res) => {
 //         res.json({message: 'UUU', AuthData});
 //     }
 // })
- module.exports = router;
+    module.exports = router;
