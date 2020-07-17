@@ -8,6 +8,7 @@ const config = require('../../config');
 //      Loading reaction models
 
 const User = require('../models/User');
+const Useri = require('../models/users1');
 //      Loading methods
 const VerifyToken = require('../methods/VerifyToken');
 
@@ -72,9 +73,11 @@ router.post('/register', verification.ver, async (req, res) => {
 
 
 router.post('/login', (req, res) => {
-    queries.GetUserbyName(req.body.username).then(async response => {
-
-            const user = JSON.parse(response);
+    Useri.findOne({
+        where:{
+       name: req.body.username
+        }
+    }).then(async response => {
                 try {
                     await bcrypt.compare(req.body.password, user[0].password, (err, succes) => {
                         if (err) {
