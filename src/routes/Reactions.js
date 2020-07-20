@@ -8,6 +8,7 @@ const config = require('../../config');
 //      Loading reaction models
 
 const Reaction = require('../models/Reactions');
+const Settings = require('../models/Settings');
 //      Loading Querries
 
 const router = express.Router();
@@ -15,7 +16,7 @@ const router = express.Router();
 
 const verification = require('../methods/VerifyToken');
 
-//______________________________________________
+
 //      Getting all reactions as a response
 router.get('/getreactions',verification.ver,(req,res)=>{  
     jwt.verify(req.token,config.privkey,(err,AuthData)=> {
@@ -30,7 +31,7 @@ router.get('/getreactions',verification.ver,(req,res)=>{
             })
             .then(reactions => 
                 {
-                    console.log("ALL Reaction GETTED ");
+                    console.log("ALL Reaction Got");
                     res.status(200).end(JSON.stringify(reactions));
                 })
             .catch(err=>console.log(err))
@@ -54,12 +55,12 @@ router.get('/getreaction/:id',verification.ver,(req,res)=>{
                     if(reactions!=null){
                     if(reactions.company==AuthData.company)
                     {
-                    console.log("Reaction GETTED /ID");
+                    console.log("Reaction GOT /ID");
                      res.status(200).end(JSON.stringify(reactions));
                     }
                     else
                     {
-                    console.log("ID NOT FOUND IN YOUR COMPANY");
+                    console.log("ID not found");
                     res.sendStatus(404);
                     }
                 }
@@ -174,19 +175,28 @@ router.get('/countreactions/:date',verification.ver,(req,res) =>{
             res.sendStatus(403);
         }else{
             if(AuthData.lvl>1){
-                Reaction.count({
-                    where:{
-                    date: req.params.date,
-                    company: AuthData.company
-                    }
-                })
-                        .then(result => {
-                            res.status(200);
-                            res.end(JSON.stringify(result));
-                        })
-                        .catch(err => {
-                            console.log(err);
-                        });
+            Settings.findOne({
+                where:{
+                    company:AuthData.company
+                }
+            }).then(setting=>{
+                console.log(setting);
+                // for(let i=0;i<=5;i++){               
+                //     Reaction.count({
+                //     where:{
+                //     date: req.params.date,
+                //     company: AuthData.company
+                //     }
+                // })
+                //         .then(result => {
+                //             res.status(200);
+                //             res.end(JSON.stringify(result));
+                //         })
+                //         .catch(err => {
+                //             console.log(err);
+                //         });}
+            })
+
         }else 
         res.sendStatus(403);
         }
