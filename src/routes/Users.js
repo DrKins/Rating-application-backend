@@ -6,19 +6,13 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const config = require('../../config');
 //      Loading reaction models
-
 const User = require('../models/User');
-const Useri = require('../models/users1');
+const Settings = require('../models/Settings');
 //      Loading methods
 const VerifyToken = require('../methods/VerifyToken');
-
-//      Loading Querries
-
-const Queries = require('../querries/Queries');
 const verification = require('../methods/VerifyToken');
 
 const router = express.Router()
-let queries = new Queries();
 
 router.post('/register', verification.ver, async (req, res) => {
 
@@ -26,58 +20,97 @@ router.post('/register', verification.ver, async (req, res) => {
         if (err) {
             res.sendStatus(403);
         } else {
-            queries.GetSettings(req.body.company).then((result) => {
-                if (result === "[]") {
-                    queries.CreateSettings(req.body.company);
-                }
-            })
-            queries.GetUserbyName(req.body.username).then(async (result) => {
-                if (result != "[]") {
-                    res.sendStatus(400);
-                } else {
-
-                    if (AuthData.user[0].lvl == 1) {
-                        // this if and its elses are used for the leveling system could
-                        // possibly be substituted with a switch case
-                        res.sendStatus(403);
-                    } else if (AuthData.user[0].lvl == 2) {
-                        const HashedPW = await bcrypt.hash(req.body.password, 10);
-                        if (req.body.level > 2) {
-                            res.sendStatus(403)
+            if(AuthData.lvl>2)
+            {
+          Settings.findOne({
+              where:
+              {
+                  company: req.body.company
+              }
+          })
+          .then(company=>
+            {
+                if(!company)
+                {
+                        Settings.create({
+                        message: "Hvala vam na glasanju",
+                        messageDuration: 5,
+                        emoticonCount: 3,
+                        company: req.body.company
+                    })
+                    console.log("Company Created")
+                    User.findOne({
+                        where: {
+                            name : req.body.name
                         }
-                        const user = new User(req.body.username, HashedPW, req.body.level, AuthData.user[0].company);
-                        console.log(user);
-
-                        queries.CreateNewUser(user);
-                        console.log("User created");
-                        res.sendStatus(201);
-                    } else if (AuthData.user[0].lvl == 3) {
-                        const HashedPW = await bcrypt.hash(req.body.password, 10);
-                        const user = new User(req.body.username, HashedPW, req.body.level, req.body.company);
-                        console.log(user);
-
-                        queries.CreateNewUser(user);
-                        console.log("User created");
-                        res.sendStatus(201);
-                    } else {
-
-                        res.sendStatus(403);
-                    }
+                    })
+                    .then(user=>
+                      {
+                          if(!user)
+                          {
+                              User.create({
+                                  name: req.body.name,
+                                  password: req.body.password,
+                                  lvl: req.body.lvl,
+                                  company: req.body.company
+                              })
+                              console.log("User created")
+                          }
+                          else
+                          {
+                              console.log("User exist")
+                          }
+                      }
+                      )
+                      .catch(err=>console.log(err))
+                      res.status(200).end("CREATED");
                 }
-            }).catch(err => {
-                res.send(err);
+                else
+               {
+                User.findOne({
+                    where: {
+                        name : req.body.name
+                    }
+                })
+                .then(user=>
+                  {
+                      if(!user)
+                      {
+                          User.create({
+                              name: req.body.name,
+                              password: req.body.password,
+                              lvl: req.body.lvl,
+                              company: req.body.company
+                          })
+                          console.log("User created")
+                      }
+                      else
+                      {
+                          console.log("User exist")
+                      }
+                  }
+                  )
+                  .catch(err=>console.log(err))
+                console.log("COMPANY EXIST")
+                res.status(200).end("EXIST");
+               }
             })
+            .catch(err=>console.log(err))
+        }
+        else res.sendStatus(403);
         }
     })
 });
 
 
+
 router.post('/login', (req, res) => {
-    Useri.findOne({
+    User.findOne({
             where: {
                 name: req.body.username
             }
-        }).then(async response => {
+        })
+        .then(async response => {
 
                 try {
                     await bcrypt.compare(req.body.password, response.dataValues.password, (err, succes) => {
@@ -96,10 +129,12 @@ router.post('/login', (req, res) => {
                     console.log(err);
 
                     res.sendStatus(500);
-                }}
+                }
+            }
         ).catch(err => {
             console.log(err);
-        })}
+        })
+    }
 );
 
 // /////////////////////////Test routes////////////////////////////////////////////router.get('/test', VerifyToken.ver, (req, res) => {
@@ -111,4 +146,4 @@ router.post('/login', (req, res) => {
 //         res.json({message: 'UUU', AuthData});
 //     }
 // })
-    module.exports = router;
+ module.exports = router;
