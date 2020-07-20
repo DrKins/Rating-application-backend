@@ -7,12 +7,12 @@ const Sequelize = require('sequelize');
  * Load connection obj
  */
 const sequelize = new Sequelize(
-  'rating',
+  'xuZXyWb00y',
   // 'test', // Use when testing failed connection
-  'root',
-  'password',
+  'xuZXyWb00y',
+  'DQkiFTxMgL',
   {
-    host: process.env.DATABASE_HOST || '127.0.0.1',
+    host: 'remotemysql.com',
     dialect: 'mysql',
     logging: false,
     define: {
