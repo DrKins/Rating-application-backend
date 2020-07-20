@@ -1,23 +1,23 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../db/db');
 
-module.exports = sequelize.define('users',{
+module.exports = sequelize.define('settings',{
     id: {
         type: Sequelize.INTEGER(11),
         allowNull: false,
         autoIncrement: true,
         primaryKey: true
     },
-    name:  {
-    type: Sequelize.STRING(256)
+    message: {
+    type: Sequelize.STRING(30)
     },
-    password:  {
-        type: Sequelize.STRING(256)
-        },
-    lvl: {
-        type: Sequelize.INTEGER(15),
+    messageDuration: {
+        type: Sequelize.INTEGER(11),
+    },
+    emoticonCount: {
+        type: Sequelize.INTEGER(11),
     },
     company: {
-        type: Sequelize.STRING(255),
+        type: Sequelize.STRING(300),
     },
 })

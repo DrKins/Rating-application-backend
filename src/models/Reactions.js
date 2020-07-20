@@ -1,23 +1,21 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../db/db');
 
-module.exports = sequelize.define('users',{
+module.exports = sequelize.define('reactions',{
     id: {
         type: Sequelize.INTEGER(11),
         allowNull: false,
         autoIncrement: true,
         primaryKey: true
     },
-    name:  {
-    type: Sequelize.STRING(256)
+    date:  {
+    type: Sequelize.DATE,
+    defaultValue: Sequelize.NOW
     },
-    password:  {
-        type: Sequelize.STRING(256)
-        },
-    lvl: {
-        type: Sequelize.INTEGER(15),
+    emoticon: {
+        type: Sequelize.INTEGER(11),
     },
     company: {
-        type: Sequelize.STRING(255),
+        type: Sequelize.STRING(300),
     },
 })
