@@ -40,6 +40,8 @@ router.get('/getreactions', verification.ver, (req, res) => {
         }
     })
 });
+
+//      Getting a reaction by id
 router.get('/getreaction/:id', verification.ver, (req, res) => {
     jwt.verify(req.token, config.privkey, (err, AuthData) => {
         if (err) {
@@ -72,12 +74,13 @@ router.get('/getreaction/:id', verification.ver, (req, res) => {
         }
     })
 });
+//      Deleting a reaction
 router.delete('/deletereaction/:id', verification.ver, (req, res) => {
     jwt.verify(req.token, config.privkey, (err, AuthData) => {
         if (err) {
             res.sendStatus(403);
         } else {
-            if (AuthData.lvl > 1) { //
+            if (AuthData.lvl > 1) { 
                 Reaction.findOne({
                     where: {
                         id: req.params.id
@@ -160,9 +163,6 @@ router.get('/countreaction', verification.ver, (req, res) => {
 
                     } else 
                         res.sendStatus(403);
-                    
-
-
                 }
             })
 
@@ -170,7 +170,7 @@ router.get('/countreaction', verification.ver, (req, res) => {
     })
 });
 
-//      Counts all reactions an integer
+//      Counts reactions by date and returns an array
 router.get('/countreactions/:date', verification.ver, (req, res) => {
     jwt.verify(req.token, config.privkey, (err, AuthData) => {
         if (err) {
@@ -204,9 +204,6 @@ router.get('/countreactions/:date', verification.ver, (req, res) => {
 
             } else 
                 res.sendStatus(403);
-            
-
-
         }
     })
 });
