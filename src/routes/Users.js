@@ -27,37 +27,24 @@ router.post('/register', verification.ver, async (req, res) => {
                     }
                 }).then(company => {
                     if (!company) {
-                        Settings.create({message: "Hvala vam na glasanju", messageDuration: 5, emoticonCount: 3, company: req.body.company})
-                        console.log("Company Created")
+                        Settings.create({message: "Hvala vam na glasanju", messageDuration: 5, emoticonCount: 3, company: req.body.company});
+                        console.log("Company Created");
+                         }
                         User.findOne({
-                            where: {
+                            where:{
                                 name: req.body.name
                             }
-                        }).then(user => {
+                        }).then(async (user) => {
                             if (!user) {
-                                User.create({name: req.body.name, password: req.body.password, lvl: req.body.lvl, company: req.body.company})
-                                console.log("User created")
+                                const HashedPW = await bcrypt.hash(req.body.password, 10);
+                                User.create({name: req.body.name, password: HashedPW, lvl: req.body.lvl, company: req.body.company});
+                                console.log("User created");
                             } else {
-                                console.log("User exist")
+                                console.log("User exist");
                             }
                         }).catch(err => console.log(err))
-                        res.status(201).end("CREATED");
-                    } else {
-                        User.findOne({
-                            where: {
-                                name: req.body.name
-                            }
-                        }).then(user => {
-                            if (!user) {
-                                User.create({name: req.body.name, password: req.body.password, lvl: req.body.lvl, company: req.body.company})
-                                console.log("User created")
-                            } else {
-                                console.log("User exist")
-                            }
-                        }).catch(err => console.log(err))
-                        console.log("COMPANY EXIST")
-                        res.status(200).end("EXIST");
-                    }
+                        res.status(400).end();
+                    
                 }).catch(err => console.log(err))
             } else 
                 res.sendStatus(403);
@@ -77,7 +64,7 @@ router.post('/login', (req, res) => {
             try {
                     await bcrypt.compare(req.body.password, response.dataValues.password, (err, succes) => {
                         if (err) {
-                            res.sendStatus(403)
+                            res.sendStatus(403);
                         }
                         if (succes == true) {
                             let lvl = response.dataValues.lvl;
@@ -99,3 +86,4 @@ router.post('/login', (req, res) => {
 
 
 module.exports = router;
+
