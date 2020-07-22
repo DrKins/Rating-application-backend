@@ -10,12 +10,14 @@ const http = require('http');
 const fs = require('fs');
 
 
+
  //     initializing express
  
 const app = express();
 //      loading middleware
 app.use(bodyParser.json());
 app.use(cors());
+
 
 //      Loading routes
 const settings = require('./routes/Settings');
@@ -28,9 +30,14 @@ app.use('/api/reactions/',reactions);
 app.use('/api/users/',users);
 
 
-http.createServer(app).listen(config.port, () => {
+
+
+const server =  http.createServer(app).listen(config.port, () => {
   console.log(`Listening on ${config.port}`);
-})
+});
+const io = require('socket.io')(server);
+app.set('io', io);
+
 /*
 https.createServer({
   key: fs.readFileSync(config.location_key),

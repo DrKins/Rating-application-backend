@@ -5,11 +5,13 @@ const timestamp = require('time-stamp');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const config = require('../../config');
+
+
 //      Loading models
 
 const Reaction = require('../models/Reactions');
 const Settings = require('../models/Settings');
-//      Loading Querries
+//      Loading Router
 
 const router = express.Router();
 //      Loading methods
@@ -34,9 +36,7 @@ router.get('/getreactions', verification.ver, (req, res) => {
                 }).catch(err => console.log(err))
             } else 
                 res.sendStatus(403);
-            
-
-
+        
         }
     })
 });
@@ -68,9 +68,6 @@ router.get('/getreaction/:id', verification.ver, (req, res) => {
                 }).catch(err => console.log(err))
             } else 
                 res.sendStatus(403);
-            
-
-
         }
     })
 });
@@ -108,12 +105,9 @@ router.delete('/deletereaction/:id', verification.ver, (req, res) => {
                         res.sendStatus(404);
                     }
                 }).catch(err => console.log(err))
-                //
+                
             } else 
-                res.sendStatus(403);
-            
-
-
+                res.sendStatus(403); 
         }
     })
 });
@@ -123,8 +117,10 @@ router.post('/insertreaction', verification.ver, (req, res) => {
         if (err) {
             res.sendStatus(403);
         } else {
+             const io = req.app.get('io');
             Reaction.create({emoticon: req.body.emoticon, company: AuthData.company});
             console.log("Reaction sent");
+            io.emit('INSERTION','aa');
             res.status(200).end();
         }
     })
