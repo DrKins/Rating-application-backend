@@ -27,7 +27,7 @@ router.post('/register', verification.ver, async (req, res) => {
                     }
                 }).then(company => {
                     if (!company) {
-                        Settings.create({message: "Hvala vam na glasanju", messageDuration: 5, emoticonCount: 3, company: req.body.company});
+Settings.create({message: "Hvala vam na glasanju", messageDuration: 5, emoticonCount: 3, company: req.body.company,emoticonPack: "yellowPack"});
                         console.log("Company Created");
                          }
                         User.findOne({

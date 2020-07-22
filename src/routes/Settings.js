@@ -41,7 +41,8 @@ router.patch('/setsettings', verification.ver, (req, res) => {
                 Settings.update({
                     message: req.body.message,
                     messageDuration: req.body.messageDuration,
-                    emoticonCount: req.body.emoticonCount
+                    emoticonCount: req.body.emoticonCount,
+                    emoticonPack: req.body.emoticonPack
                 }, { // what's going to be updated
                     where: {
                         company: AuthData.company
