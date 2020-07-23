@@ -19,5 +19,8 @@ module.exports = sequelize.define('settings', {
     },
     company: {
         type: Sequelize.STRING(300)
+    },
+    emoticonPack: {
+        type: Sequelize.STRING(300)
     }
 })

@@ -27,7 +27,12 @@ router.post('/register', verification.ver, async (req, res) => {
                     }
                 }).then(company => {
                     if (!company) {
-Settings.create({message: "Hvala vam na glasanju", messageDuration: 5, emoticonCount: 3, company: req.body.company,emoticonPack: "yellowPack"});
+Settings.create(
+    {message: "Hvala vam na glasanju", 
+    messageDuration: 5,
+    emoticonCount: 3, 
+    company: req.body.company,
+    emoticonPack: "yellowPack"});
                         console.log("Company Created");
                          }
                         User.findOne({
@@ -84,6 +89,27 @@ router.post('/login', (req, res) => {
         })}
 );
 
+router.get('/getallusers', verification.ver, (req, res) => {
+    jwt.verify(req.token, config.privkey, (err, AuthData) => {
+        if (err) {
+            res.sendStatus(403);
+        } else {
+            if (AuthData.lvl > 2) {
+                User.findAll({raw : true})
+                    .then(users => {
+                        users.forEach(x=>
+                            {
+                              delete x.password
+                            })
+                    console.log("ALL USERS Got");
+                    res.status(200).end(JSON.stringify(users));
+                }).catch(err => console.log(err))
+            } else 
+                res.sendStatus(403);
+        
+        }
+    })
+});
 
 module.exports = router;
 
