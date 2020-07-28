@@ -10,9 +10,8 @@ const http = require('http');
 const fs = require('fs');
 
 
+//     initializing express
 
- //     initializing express
- 
 const app = express();
 //      loading middleware
 app.use(bodyParser.json());
@@ -24,19 +23,28 @@ const settings = require('./routes/Settings');
 const reactions = require('./routes/Reactions');
 const users = require('./routes/Users');
 
+
+app.use(function(req,res,next){
+  req.io = io;
+  next();
+  })
+
 //      Initializing routes
-app.use('/api/settings/',settings);
-app.use('/api/reactions/',reactions);
-app.use('/api/users/',users);
+app.use('/api/settings/', settings);
+app.use('/api/reactions/', reactions);
+app.use('/api/users/', users);
 
 
-
-
-const server =  http.createServer(app).listen(config.port, () => {
-  console.log(`Listening on ${config.port}`);
+const server = http.createServer(app).listen(config.port, () => {
+    console.log(`Listening on ${
+        config.port
+    }`);
 });
+
 const io = require('socket.io')(server);
-app.set('io', io);
+
+  
+
 
 /*
 https.createServer({

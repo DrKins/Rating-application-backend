@@ -16,7 +16,7 @@ router.get('/getsettings', verification.ver, (req, res) => {
 
             res.sendStatus(403);
         } else {
-            if (AuthData.lvl > 1) {
+
                 Settings.findAll({
                     where: {
                         company: AuthData.company
@@ -25,9 +25,10 @@ router.get('/getsettings', verification.ver, (req, res) => {
                     console.log("Settings got");
                     res.status(200).end(JSON.stringify(settings));
                 }).catch(err => console.log(err))
-            } else 
-                res.sendStatus(403);
+
             
+
+
         }
     })
 });
@@ -55,6 +56,8 @@ router.patch('/setsettings', verification.ver, (req, res) => {
             } else 
                 res.sendStatus(403);
             
+
+
         }
     })
 });
