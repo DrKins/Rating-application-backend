@@ -124,12 +124,26 @@ router.post('/insertreaction', verification.ver, (req, res) => {
         if (err) {
             res.sendStatus(403);
         } else {
-
-    
             Reaction.create({emoticon: req.body.emoticon, company: AuthData.company});
             console.log("Reaction sent");
+            try {
+                res.header("Content-Type","text/plain")
                 req.io.emit("INSERTION","aa");
-            res.status(200).end();
+                res.status(200).end("radi");
+            } catch (error) {
+                res.header("Content-Type","text/plain")
+                console.log(error);
+                res.status(406).end("ne radi");
+            }
+            // req.io.emit("INSERTION","aa").then(result=>{
+            //     console.log(result);
+            //     res.status(200).end(JSON.stringify(result));
+            // }).catch((err)=>{
+            //     console.log(err);
+            //     res.status(406).end("ne radi");
+            // });
+             //   console.log(req.io);
+          //  res.status(200).end();
         }
     })
 });
@@ -157,6 +171,7 @@ router.get('/countreaction', verification.ver, (req, res) => {
 
                             temp.push(result);
                             if (temp.length == setting.dataValues.emoticonCount) {
+                                res.header("Content-Type","text/plain")
                                 res.end(JSON.stringify(temp));
                             }
 

@@ -22,8 +22,10 @@ router.get('/getsettings', verification.ver, (req, res) => {
                         company: AuthData.company
                     }
                 }).then(settings => {
+                  
                     console.log("Settings got");
-                    res.status(200).end(JSON.stringify(settings));
+                    res.json(settings);
+                  
                 }).catch(err => console.log(err))
 
             
