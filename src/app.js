@@ -29,6 +29,7 @@ app.use(function(req,res,next){
   next();
   })
 
+
 //      Initializing routes
 app.use('/api/settings/', settings);
 app.use('/api/reactions/', reactions);
@@ -42,7 +43,9 @@ const server = http.createServer(app).listen(config.port, () => {
 });
 
 const io = require('socket.io')(server);
-
+io.on("connection",(socket)=>{ 
+  console.log("korisnik konektovan"+socket);
+})
   
 
 
