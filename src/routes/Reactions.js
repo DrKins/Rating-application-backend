@@ -1,7 +1,6 @@
 //      Loading dependencies
 
 const express = require('express');
-const timestamp = require('time-stamp');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const config = require('../../config');
@@ -135,15 +134,6 @@ router.post('/insertreaction', verification.ver, (req, res) => {
                 console.log(error);
                 res.status(406).end("ne radi");
             }
-            // req.io.emit("INSERTION","aa").then(result=>{
-            //     console.log(result);
-            //     res.status(200).end(JSON.stringify(result));
-            // }).catch((err)=>{
-            //     console.log(err);
-            //     res.status(406).end("ne radi");
-            // });
-             //   console.log(req.io);
-          //  res.status(200).end();
         }
     })
 });
@@ -197,7 +187,7 @@ router.get('/countreactions/:date', verification.ver, (req, res) => {
         if (err) {
             res.sendStatus(403);
         } else {
-
+                console.log("tu sam");
             if (AuthData.lvl > 1) {
                 Settings.findOne({
                     where: {
@@ -205,11 +195,12 @@ router.get('/countreactions/:date', verification.ver, (req, res) => {
                     }
                 }).then(setting => {
                     var temp = [];
+                    var temp_date = req.params.date.substring(1);
                     for (let i = 0; i <= setting.dataValues.emoticonCount; i++) {
                         Reaction.count({
                             where: {
                                 emoticon: i,
-                                date: req.params.date,
+                                date: temp_date,
                                 company: AuthData.company
                             }
                         }).then(result => {

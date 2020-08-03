@@ -35,7 +35,7 @@ router.get('/getsettings', verification.ver, (req, res) => {
     })
 });
 
-router.patch('/setsettings', verification.ver, (req, res) => {
+router.post('/setsettings', verification.ver, (req, res) => {
     jwt.verify(req.token, config.privkey, (err, AuthData) => {
         if (err) {
             res.sendStatus(403);

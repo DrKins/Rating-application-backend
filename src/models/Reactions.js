@@ -1,4 +1,6 @@
 const Sequelize = require('sequelize');
+const timestamp = require('time-stamp');
+
 const sequelize = require('../db/db');
 
 module.exports = sequelize.define('reactions', {
@@ -9,8 +11,8 @@ module.exports = sequelize.define('reactions', {
         primaryKey: true
     },
     date: {
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
+        type: Sequelize.INTEGER(11),
+        defaultValue: timestamp('YYYYMMDD')
     },
     emoticon: {
         type: Sequelize.INTEGER(11)
