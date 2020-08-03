@@ -8,7 +8,7 @@
       "ignore_watch": [
         "node_modules"
       ],
-      "instances": 4
+      "instances": 1
     }
   ]
 }
