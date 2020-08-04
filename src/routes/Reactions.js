@@ -180,15 +180,16 @@ router.get('/countreactions/:date', verification.ver, (req, res) => {
                 }).then(setting => {
                     var temp = [];
                     var temp_date = req.params.date.substring(1); // removes the : from the date
-                    for (let i = 0; i <= setting.dataValues.emoticonCount; i++) { // itterates as many times as there are reactions in the db
+                    for (let i = 1; i <= setting.dataValues.emoticonCount; i++) { // itterates as many times as there are reactions in the db
                         Reaction.count({
                             where: {
                                 emoticon: i,
                                 date: temp_date,
                                 company: AuthData.company
                             }
-                        }).then((result) => {
+                        }).then(async (result) => {
                             temp[i - 1] = await result; // arranges the results in an array
+                            console.log(temp);
                             if (temp.length == setting.dataValues.emoticonCount) {
                                 res.end(JSON.stringify(temp)); // responds with an array
                             }
@@ -196,6 +197,7 @@ router.get('/countreactions/:date', verification.ver, (req, res) => {
                             console.log(err);
                         });
                     }
+                   
                 })
 
             } else 
