@@ -4,8 +4,6 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const config = require('../../config');
-
-
 //      Loading models
 
 const Reaction = require('../models/Reactions');
@@ -16,10 +14,9 @@ const router = express.Router();
 //      Loading methods
 
 const verification = require('../methods/VerifyToken');
-const { log } = require('console');
-
-
+const {log} = require('console');
 //      Getting all reactions as a response
+
 router.get('/getreactions', verification.ver, (req, res) => {
     jwt.verify(req.token, config.privkey, (err, AuthData) => {
         if (err) {
@@ -37,12 +34,9 @@ router.get('/getreactions', verification.ver, (req, res) => {
             } else 
                 res.sendStatus(403);
             
-
-
         }
     })
 });
-
 //      Getting a reaction by id
 router.get('/getreaction/:id', verification.ver, (req, res) => {
     jwt.verify(req.token, config.privkey, (err, AuthData) => {
@@ -71,7 +65,6 @@ router.get('/getreaction/:id', verification.ver, (req, res) => {
             } else 
                 res.sendStatus(403);
             
-
         }
     })
 });
@@ -113,7 +106,6 @@ router.delete('/deletereaction/:id', verification.ver, (req, res) => {
             } else 
                 res.sendStatus(403);
             
-
         }
     })
 });
@@ -126,18 +118,17 @@ router.post('/insertreaction', verification.ver, (req, res) => {
             Reaction.create({emoticon: req.body.emoticon, company: AuthData.company});
             console.log("Reaction sent");
             try {
-                res.header("Content-Type","text/plain")
-                req.io.emit("INSERTION","aa");
-                res.status(200).end("radi");
+                res.header("Content-Type", "text/plain") // removes a warning in firefox
+                req.io.emit("INSERTION", "aa"); // socket servise emit needed for real time graph updates
+                res.status(200).end("Reaction Inserted");
             } catch (error) {
-                res.header("Content-Type","text/plain")
+                res.header("Content-Type", "text/plain") // removes a warning in firefox
                 console.log(error);
-                res.status(406).end("ne radi");
+                res.status(406).end();
             }
         }
     })
 });
-
 //      Count reactions returns an array
 router.get('/countreaction', verification.ver, (req, res) => {
     jwt.verify(req.token, config.privkey, (err, AuthData) => {
@@ -148,7 +139,7 @@ router.get('/countreaction', verification.ver, (req, res) => {
                 where: {
                     company: AuthData.company
                 }
-            }).then(setting => {
+            }).then((setting) => {
                 var temp = [];
                 for (let i = 1; i <= setting.dataValues.emoticonCount; i++) {
                     if (AuthData.lvl > 1) {
@@ -157,37 +148,30 @@ router.get('/countreaction', verification.ver, (req, res) => {
                                 emoticon: i,
                                 company: AuthData.company
                             }
-                        }).then(result => {
+                        }).then(async (result) => {
+                            temp[i - 1] = await result; // awaits the db response and writes into the array
 
-                            temp.push(result);
-                            if (temp.length == setting.dataValues.emoticonCount) {
-                                res.header("Content-Type","text/plain")
+                            if (temp.length === setting.dataValues.emoticonCount) {
+                                res.header("Content-Type", "text/plain") // removes a warinng in firefox
                                 res.end(JSON.stringify(temp));
                             }
-
                         }).catch(err => {
                             console.log(err);
                         });
-
-
                     } else 
                         res.sendStatus(403);
                     
-
                 }
             })
-
         }
     })
 });
-
 //      Counts reactions by date and returns an array
 router.get('/countreactions/:date', verification.ver, (req, res) => {
     jwt.verify(req.token, config.privkey, (err, AuthData) => {
         if (err) {
             res.sendStatus(403);
         } else {
-                console.log("tu sam");
             if (AuthData.lvl > 1) {
                 Settings.findOne({
                     where: {
@@ -195,18 +179,18 @@ router.get('/countreactions/:date', verification.ver, (req, res) => {
                     }
                 }).then(setting => {
                     var temp = [];
-                    var temp_date = req.params.date.substring(1);
-                    for (let i = 0; i <= setting.dataValues.emoticonCount; i++) {
+                    var temp_date = req.params.date.substring(1); // removes the : from the date
+                    for (let i = 0; i <= setting.dataValues.emoticonCount; i++) { // itterates as many times as there are reactions in the db
                         Reaction.count({
                             where: {
                                 emoticon: i,
                                 date: temp_date,
                                 company: AuthData.company
                             }
-                        }).then(result => {
-                            temp.push(result);
+                        }).then((result) => {
+                            temp[i - 1] = await result; // arranges the results in an array
                             if (temp.length == setting.dataValues.emoticonCount) {
-                                res.end(JSON.stringify(temp));
+                                res.end(JSON.stringify(temp)); // responds with an array
                             }
                         }).catch(err => {
                             console.log(err);
@@ -217,6 +201,7 @@ router.get('/countreactions/:date', verification.ver, (req, res) => {
             } else 
                 res.sendStatus(403);
             
+
 
         }
     })
