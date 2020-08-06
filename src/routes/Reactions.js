@@ -4,6 +4,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const config = require('../../config');
+
 //      Loading models
 
 const Reaction = require('../models/Reactions');
@@ -15,6 +16,7 @@ const router = express.Router();
 
 const verification = require('../methods/VerifyToken');
 const {log} = require('console');
+const { settings } = require('cluster');
 //      Getting all reactions as a response
 
 router.get('/getreactions', verification.ver, (req, res) => {
@@ -139,29 +141,28 @@ router.get('/countreaction', verification.ver, (req, res) => {
                 where: {
                     company: AuthData.company
                 }
+               //SELECT COUNT(emoticon) AS response FROM reactions WHERE company='NSoft' GROUP BY emoticon ORDER BY emoticon 
             }).then((setting) => {
                 var temp = [];
-                for (let i = 1; i <= setting.dataValues.emoticonCount; i++) {
+                var emoticonc=setting.emoticonCount;
                     if (AuthData.lvl > 1) {
                         Reaction.count({
                             where: {
-                                emoticon: i,
                                 company: AuthData.company
-                            }
-                        }).then(async (result) => {
-                            temp[i - 1] = await result; // awaits the db response and writes into the array
-
-                            if (temp.length === setting.dataValues.emoticonCount) {
-                                res.header("Content-Type", "text/plain") // removes a warinng in firefox
-                                res.end(JSON.stringify(temp));
-                            }
+                            },
+                            group:['emoticon']
+                        }).then((result) => {          
+                            result.forEach(element => {
+                                temp[element.emoticon-1]=element.count;
+                            });
+                            res.json({temp,
+                                     emoticonc    
+                                });
                         }).catch(err => {
                             console.log(err);
                         });
                     } else 
                         res.sendStatus(403);
-                    
-                }
             })
         }
     })
@@ -178,25 +179,31 @@ router.get('/countreactions/:date', verification.ver, (req, res) => {
                         company: AuthData.company
                     }
                 }).then(setting => {
-                    var temp = [];
-                    var temp_date = req.params.date.substring(1); // removes the : from the date
-                    for (let i = 1; i <= setting.dataValues.emoticonCount; i++) { // itterates as many times as there are reactions in the db
+
+                    var temp_date = req.params.date.substring(0); // removes the : from the date
+                    var emoticonc = setting.emoticonCount;
+                 
                         Reaction.count({
                             where: {
-                                emoticon: i,
                                 date: temp_date,
                                 company: AuthData.company
+                            },
+                             group:['emoticon']
+                        }).then((result) => {
+                            let temp = [];
+                            for (let i = 1; i <= emoticonc; i++) {
+                                temp[i-1] = 0;
+                                result.forEach((obj, ind) => {
+                                    if(result[ind].emoticon == i)
+                                        temp[i-1] = result[ind].count;
+                                })
                             }
-                        }).then(async (result) => {
-                            temp[i - 1] = await result; // arranges the results in an array
-                            console.log(temp);
-                            if (temp.length == setting.dataValues.emoticonCount) {
-                                res.end(JSON.stringify(temp)); // responds with an array
-                            }
+                           res.json({temp,emoticonc});
+
                         }).catch(err => {
                             console.log(err);
                         });
-                    }
+                    
                    
                 })
 
