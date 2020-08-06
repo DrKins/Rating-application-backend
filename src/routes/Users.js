@@ -21,7 +21,7 @@ router.post('/register', verification.ver, async (req, res) => {
         if (err) {
             res.sendStatus(403);
         } else {
-            if (AuthData.lvl > 2) {
+            if (AuthData.lvl > 1) {
                 Settings.findOne({
                     where: {
                         company: req.body.company
@@ -42,9 +42,13 @@ router.post('/register', verification.ver, async (req, res) => {
                             name: req.body.name
                         }
                     }).then(async (user) => {
+                        let level = req.body.lvl;
                         if (!user) {
+                            if(AuthData.lvl==2){
+                                level = 1;
+                            }
                             const HashedPW = await bcrypt.hash(req.body.password, 10);
-                            User.create({name: req.body.name, password: HashedPW, lvl: req.body.lvl, company: req.body.company});
+                            User.create({name: req.body.name, password: HashedPW, lvl: level, company: req.body.company});
                             console.log("User created");
                         } else {
                             console.log("User exist");
