@@ -4,6 +4,9 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const config = require('../../config');
+const timestamp = require('time-stamp');
+const sequelize= require('sequelize');
+const op = sequelize.Op;
 
 //      Loading models
 
@@ -15,8 +18,10 @@ const router = express.Router();
 //      Loading methods
 
 const verification = require('../methods/VerifyToken');
-const {log} = require('console');
 const { settings } = require('cluster');
+const { or } = require('sequelize');
+
+
 //      Getting all reactions as a response
 
 router.get('/getreactions', verification.ver, (req, res) => {
@@ -117,10 +122,11 @@ router.post('/insertreaction', verification.ver, (req, res) => {
         if (err) {
             res.sendStatus(403);
         } else {
-            Reaction.create({emoticon: req.body.emoticon, company: AuthData.company});
+            Reaction.create({emoticon: req.body.emoticon, company: AuthData.company,date : timestamp('YYYYMMDDHHmmss')});
             console.log("Reaction sent");
             try {
                 res.header("Content-Type", "text/plain") // removes a warning in firefox
+                console.log(timestamp.utc('YYYYMMDDHHmmss'));
                 req.io.emit("INSERTION", "aa"); // socket servise emit needed for real time graph updates
                 res.status(200).end("Reaction Inserted");
             } catch (error) {
@@ -129,6 +135,7 @@ router.post('/insertreaction', verification.ver, (req, res) => {
                 res.status(406).end();
             }
         }
+        
     })
 });
 //      Count reactions returns an array
@@ -167,6 +174,69 @@ router.get('/countreaction', verification.ver, (req, res) => {
         }
     })
 });
+//      Count reactions by hour dor date
+router.get('/bydate/:date', verification.ver, (req, res) => {
+    jwt.verify(req.token, config.privkey, (err, AuthData) => {
+        if (err) {
+            res.sendStatus(403);
+        } else {
+            if (AuthData.lvl > 1) {
+                Settings.findOne({
+                    where: {
+                        company: AuthData.company
+                    }
+                }).then(setting => {
+
+                    var temp_date = req.params.date.substring(0); // removes the : from the date
+                    var emoticonc = setting.emoticonCount;
+                 
+                        Reaction.findAll({
+                            where: {
+                                where: sequelize.where(sequelize.fn('date', sequelize.col('date')), temp_date),
+                                company: AuthData.company
+                            },
+                            raw:true
+                              
+                        }).then((result) => {
+                            let temp ={};
+
+                            
+                        
+                           // console.log(result);
+                          
+                            for(let i=1;i<=setting.emoticonCount;i++){
+                                let react = new Array(23).fill(0);                             
+                                for(let j=0;j<=23;j++){
+                                    result.forEach(el=> {
+                                        if(el.emoticon==i && parseInt(timestamp("HH",el.date))==j){
+                                            react[j]++;
+                                        }
+                                    })
+                                
+                                    if(j==23){
+                                temp[i]=react;
+
+                                    }
+                                }
+                                
+                            }
+                           res.json(temp);
+                        }).catch(err => {
+                            console.log(err);
+                        });
+                    
+                   
+                })
+
+            } else 
+                res.sendStatus(403);
+            
+
+
+        }
+    })
+});
+
 //      Counts reactions by date and returns an array
 router.get('/countreactions/:date', verification.ver, (req, res) => {
     jwt.verify(req.token, config.privkey, (err, AuthData) => {
@@ -185,15 +255,15 @@ router.get('/countreactions/:date', verification.ver, (req, res) => {
                  
                         Reaction.count({
                             where: {
-                                date: temp_date,
+                                where: sequelize.where(sequelize.fn('date', sequelize.col('date')), temp_date),
                                 company: AuthData.company
                             },
-                             group:['emoticon']
+                             group:['emoticon']// yyyymmdd hhmmss 
                         }).then((result) => {
                             let temp = [];
-                            for (let i = 1; i <= emoticonc; i++) {
+                            for (let i = 1; i <= emoticonc; i++) {  // folowing code written by carcair
                                 temp[i-1] = 0;
-                                result.forEach((obj, ind) => {
+                                result.forEach((obj, ind) => { 
                                     if(result[ind].emoticon == i)
                                         temp[i-1] = result[ind].count;
                                 })

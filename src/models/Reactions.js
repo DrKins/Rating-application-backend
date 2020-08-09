@@ -12,7 +12,7 @@ module.exports = sequelize.define('reactions', {
     },
     date: {
         type: Sequelize.INTEGER(11),
-        defaultValue: timestamp('YYYYMMDD')
+       // defaultValue: timestamp.utc('YYYY-MM-DD HH:mm:ss')
     },
     emoticon: {
         type: Sequelize.INTEGER(11)
