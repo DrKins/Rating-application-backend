@@ -187,7 +187,7 @@ router.get('/bydate/:date', verification.ver, (req, res) => {
                     }
                 }).then(setting => {
 
-                    var temp_date = req.params.date.substring(0); // removes the : from the date
+                    var temp_date = req.params.date.substring(1); // removes the : from the date
                     var emoticonc = setting.emoticonCount;
                  
                         Reaction.findAll({
@@ -250,7 +250,7 @@ router.get('/countreactions/:date', verification.ver, (req, res) => {
                     }
                 }).then(setting => {
 
-                    var temp_date = req.params.date.substring(0); // removes the : from the date
+                    var temp_date = req.params.date.substring(1); // removes the : from the date
                     var emoticonc = setting.emoticonCount;
                  
                         Reaction.count({
