@@ -11,10 +11,10 @@ const Settings = require('../models/Settings');
 //      Loading methods
 
 const verification = require('../methods/VerifyToken');
-
+//      Initializing router
 
 const router = express.Router()
-
+//      Creating a new user 
 router.post('/register', verification.ver, async (req, res) => {
 
     jwt.verify(req.token, config.privkey, async (err, AuthData) => {
@@ -27,25 +27,25 @@ router.post('/register', verification.ver, async (req, res) => {
                         company: req.body.company
                     }
                 }).then(company => {
-                    if (!company) {
+                    if (!company) {             //Cheking if a company exists and creates it if it doesn't 
                         Settings.create({
-                            message: "Hvala vam na glasanju",
+                            message: "Hvala vam na glasanju",   
                             messageDuration: 5,
                             emoticonCount: 3,
-                            company: req.body.company,
+                            company: req.body.company,          //      Default settings values for new company
                             emoticonPack: "yellowPack"
                         });
                         console.log("Company Created");
                     }
                     User.findOne({
                         where: {
-                            name: req.body.name
+                            name: req.body.name  //     Querrying to chek if username already in use
                         }
                     }).then(async (user) => {
                         let level = req.body.lvl;
-                        if (!user) {
+                        if (!user) {        
                             if(AuthData.lvl==2){
-                                level = 1;
+                                level = 1;      //      Lvl 2 user is only allowed to crate lvl 1 user
                             }
                             const HashedPW = await bcrypt.hash(req.body.password, 10);
                             User.create({name: req.body.name, password: HashedPW, lvl: level, company: req.body.company});
@@ -59,8 +59,6 @@ router.post('/register', verification.ver, async (req, res) => {
                 }).catch(err => console.log(err))
             } else 
                 res.sendStatus(403);
-            
-
         }
     })
 });

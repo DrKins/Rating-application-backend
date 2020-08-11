@@ -13,28 +13,20 @@ const router = express.Router();
 router.get('/getsettings', verification.ver, (req, res) => {
     jwt.verify(req.token, config.privkey, (err, AuthData) => {
         if (err) {
-
             res.sendStatus(403);
         } else {
-
                 Settings.findAll({
                     where: {
                         company: AuthData.company
                     }
-                }).then(settings => {
-                  
+                }).then(settings => {  
                     console.log("Settings got");
-                    res.json(settings);
-                  
+                    res.json(settings);  
                 }).catch(err => console.log(err))
-
-            
-
-
         }
     })
 });
-
+//      Settings upedating endpoint 
 router.post('/setsettings', verification.ver, (req, res) => {
     jwt.verify(req.token, config.privkey, (err, AuthData) => {
         if (err) {
@@ -52,14 +44,11 @@ router.post('/setsettings', verification.ver, (req, res) => {
                     }
                 } // where clause
                 ).then(settings => {
-                    console.log("Settings set");
+                    console.log("Settings set"+ settings);
                     res.sendStatus(200);
                 }).catch(err => console.log(err))
             } else 
                 res.sendStatus(403);
-            
-
-
         }
     })
 });

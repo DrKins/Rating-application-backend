@@ -9,7 +9,6 @@ const https = require('https');
 const http = require('http');
 const fs = require('fs');
 
-
 //     initializing express
 
 const app = express();
@@ -29,12 +28,10 @@ app.use(function(req,res,next){
   next();
   })
 
-
 //      Initializing routes
 app.use('/api/settings/', settings);
 app.use('/api/reactions/', reactions);
 app.use('/api/users/', users);
-
 
 const server = http.createServer(app).listen(config.port, () => {
     console.log(`Listening on ${
@@ -47,8 +44,6 @@ io.on("connection",(socket)=>{
   console.log("korisnik konektovan"+socket);
 })
   
-
-
 /*
 https.createServer({
   key: fs.readFileSync(config.location_key),

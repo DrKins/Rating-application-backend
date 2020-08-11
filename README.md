@@ -11,17 +11,17 @@ Full-stack application for rating the quality of service rendered. The applicati
 
 All sensitive variables stored in config.js encrypted with transcrypt clone the repo then contact rmvc-mirza to get the transcrypt info
 
-Run server with:
-`npm run start`
+Build containers with:
+`docker-compose build`
 
-or using nodemon for development run:
-`npm run dev`
+Start the server with:
+`docker-compose up `
 
 Development is running at http://localhost:80 by default.
 
 In localhost you need to comment out https server start in app.js
 
-Current working version running @ https://praksans.dyndns.org:443/
+Current working version running @ https://praksans.dyndns.org:80/
 
 Routes:
 ## Reactions
@@ -33,9 +33,9 @@ Routes:
 
 `/deletereaction/:id` expects a number in the parameter returns 200 (GET request)
 
-`/countreaction` expects nothing returns array (GET request)
+`/bydate/:date` expects time-stamp formated (YYYYMMDD) returns object (GET request)
 
-`/countreactions/:date`expects time-stamp formated (YYYYMMDD) returns array (GET request)
+`/countreactions/:date`expects time-stamp formated (YYYYMMDD) returns object (GET request)
 
 ## Settings 
 `/api/settings`
@@ -50,6 +50,8 @@ Routes:
 `/register` expects object returns 201 {"username":"string","password":"string","level":int,"company":"string"}
 
 `/login` expects object returns token in format {"token":"string"} {"username":"string","password":"string"}
+
+`/getallusers` expects nothing returns array
 
 
 
