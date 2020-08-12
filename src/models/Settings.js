@@ -27,5 +27,15 @@ module.exports = sequelize.define('settings', {
     {
         type: Sequelize.STRING(255),
         defaultValue: "none"
+    },
+    SlackBot:
+    {
+        type: Sequelize.STRING(255),
+        defaultValue: "rating"
+    },
+    SlackChannel:
+    {
+        type: Sequelize.STRING(255),
+        defaultValue: "random"
     }
 })

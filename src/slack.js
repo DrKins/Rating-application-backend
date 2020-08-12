@@ -51,7 +51,7 @@ Settings.findAll({raw:true})
                 {
                   var bot = new SlackBot({
                     token: user.SlackToken,     //slacktoken
-                    name: 'rating'             //slackbot name
+                    name: user.SlackBot             //slackbot 
                 });
                  //start bot
                 bot.on('start', function() {
@@ -60,22 +60,22 @@ Settings.findAll({raw:true})
                     };
                     //post message (channel,message,icon_emoji)
                     bot.postMessageToChannel(
-                      'slackbot-test3',
-                      "Bad Daily Rating - Negative:" +reactions1+ " Positive: " + reactions2,
+                      user.SlackChannel,
+                      "Company " +user.company+" Bad Daily Rating - Negative:" +reactions1+ " Positive: " + reactions2,
                       params
                   )
-                  console.log(user.company+ ': valid token '+user.SlackToken) 
+                  console.log("Company "+user.company+ ': valid token '+user.SlackToken) 
                 });
                 }
                 
                 else
-                console.log(user.company+ ': invalid token '+user.SlackToken)
+                console.log("Company "+user.company+ ': invalid token '+user.SlackToken)
                 
               });
-              console.log(user.company+ " Bad Daily Rating - Negative:" +reactions1+ " Positive: " + reactions2)
+              console.log("Company "+user.company+ " Bad Daily Rating - Negative:" +reactions1+ " Positive: " + reactions2)
               }
               else
-              console.log(user.company + " Good Daily Rating - Negative:" +reactions1+ " Positive: " + reactions2)
+              console.log("Company "+user.company + " Good Daily Rating - Negative:" +reactions1+ " Positive: " + reactions2)
             })
             .catch(err => console.log(err))
           })
