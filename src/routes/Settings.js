@@ -61,7 +61,7 @@ router.post('/setslack', verification.ver, (req, res) => {
             if (AuthData.lvl > 1) {
                 Settings.update({
                    SlackToken : req.body.SlackToken,
-                   SlackBot : req.body.SlacBot,
+                   SlackBot : req.body.SlackBot,
                    SlackChannel : req.body.SlackChannel
                 }, { // what's going to be updated
                     where: {
@@ -69,7 +69,7 @@ router.post('/setslack', verification.ver, (req, res) => {
                     }
                 } // where clause
                 ).then(settings => {
-                    console.log("Slack Token set");
+                    console.log("Slack  Set");
                     res.sendStatus(200);
                 }).catch(err => console.log(err))
             } else 
