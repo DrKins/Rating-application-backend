@@ -22,5 +22,10 @@ module.exports = sequelize.define('settings', {
     },
     emoticonPack: {
         type: Sequelize.STRING(300)
+    },
+    SlackToken:
+    {
+        type: Sequelize.STRING(255),
+        defaultValue: "none"
     }
 })

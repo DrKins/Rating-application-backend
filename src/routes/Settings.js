@@ -53,4 +53,31 @@ router.post('/setsettings', verification.ver, (req, res) => {
     })
 });
 
+router.post('/setslacktoken', verification.ver, (req, res) => {
+    jwt.verify(req.token, config.privkey, (err, AuthData) => {
+        if (err) {
+            res.sendStatus(403);
+        } else {
+            if (AuthData.lvl > 1) {
+                Settings.update({
+                   SlackToken : req.body.SlackToken
+                }, { // what's going to be updated
+                    where: {
+                        company: AuthData.company
+                    }
+                } // where clause
+                ).then(settings => {
+                    console.log("Slack Token set");
+                    res.sendStatus(200);
+                }).catch(err => console.log(err))
+            } else 
+                res.sendStatus(403);
+            
+
+
+        }
+    })
+});
+
+
 module.exports = router;
