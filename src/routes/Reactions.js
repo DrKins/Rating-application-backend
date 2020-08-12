@@ -117,11 +117,11 @@ router.post('/insertreaction', verification.ver, (req, res) => {
             console.log("Reaction sent");
             try {
                 res.header("Content-Type", "text/plain") // removes a warning in firefox
-                console.log(timestamp.utc('YYYYMMDDHHmmss'));
+                console.log(timestamp('YYYYMMDDHHmmss'));
                 req.io.emit("INSERTION", "aa"); // socket servise emit needed for real time graph updates
                 res.status(200).end("Reaction Inserted");
             } catch (error) {
-                res.header("Content-Type", "text/plain") // removes a warning in firefox
+                res.headr("Content-Type", "text/plain") // removes a warning in firefox
                 console.log(error);
                 res.status(406).end();
             }
@@ -141,7 +141,7 @@ router.get('/bydate/:date', verification.ver, (req, res) => {
                         company: AuthData.company
                     }
                 }).then(setting => {
-                    var temp_date = req.params.date.substring(1); // removes the : from the date
+                    var temp_date = req.params.date.substring(0); // removes the : from the date
                     var emoticonc = setting.emoticonCount;
                         Reaction.findAll({
                             where: {
@@ -156,6 +156,7 @@ router.get('/bydate/:date', verification.ver, (req, res) => {
                                 for(let j=0;j<=23;j++){
                                     result.forEach(el=> {
                                         if(el.emoticon==i && parseInt(timestamp("HH",el.date))==j){
+                                            console.log(timestamp("HH + ",el.date));
                                             react[j]++;
                                         }
                                     })
