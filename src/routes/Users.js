@@ -76,8 +76,10 @@ router.post('/login', (req, res) => {
                         }
                         if (succes == true) {
                             let lvl = response.dataValues.lvl;
+                            let usr = response.dataValues.name;
+                            let company = response.dataValues.company;
                             jwt.sign(response.dataValues, config.privkey, (err, token) => {
-                                res.json({token, "level": lvl})
+                                res.json({token, "level": lvl,"name":usr,"company":company});
                                 res.end();
                             });
                         }
