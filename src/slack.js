@@ -4,9 +4,10 @@ const Settings = require('./models/Settings')
 const timestamp = require('time-stamp');
 const { Op } = require("sequelize");
 const request = require("request");
-setInterval(()=>
-{ 
-//take settings from all companies
+
+var CronJob = require('cron').CronJob;
+var job = new CronJob('0 0 * * *', function() {  //minutes hours day(in month) month day (in week)
+  //take settings from all companies
 Settings.findAll({raw:true}) 
 .then(users=>
   {
@@ -83,5 +84,7 @@ Settings.findAll({raw:true})
             ))
           })
           })
-          }, 60000); //interval
+}, null, true);
+job.start();
+
 
