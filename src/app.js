@@ -44,6 +44,8 @@ io.on("connection",(socket)=>{
   console.log("korisnik konektovan"+socket);
 })
   
+const slack = require('./slack')
+
 /*
 https.createServer({
   key: fs.readFileSync(config.location_key),
