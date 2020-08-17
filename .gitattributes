@@ -2,3 +2,6 @@ config.js  filter=crypt diff=crypt merge=crypt
 Dockerfile  filter=crypt diff=crypt merge=crypt
 docker-compose.yml  filter=crypt diff=crypt merge=crypt
 mysql/database.sql  filter=crypt diff=crypt merge=crypt
+src/certs/cert.pem  filter=crypt diff=crypt merge=crypt
+src/certs/chain.pem filter=crypt diff=crypt merge=crypt
+src/certs/privkey.pem filter=crypt diff=crypt merge=crypt

@@ -44,13 +44,13 @@ io.on("connection",(socket)=>{
   console.log("korisnik konektovan"+socket);
 })
   
-const slack = require('./slack')
+const slack = require('./slack');
 
-/*
+
 https.createServer({
   key: fs.readFileSync(config.location_key),
   cert: fs.readFileSync(config.location_cert),
   ca: fs.readFileSync(config.location_chain)
 }, app).listen(config.port2, () => {
   console.log(`Listening on ${config.port2}`);
-})*/
+})
