@@ -141,7 +141,7 @@ router.get('/bydate/:date', verification.ver, (req, res) => {
                         company: AuthData.company
                     }
                 }).then(setting => {
-                    var temp_date = req.params.date.substring(0); // removes the : from the date
+                    var temp_date = req.params.date.substring(1); // removes the : from the date
                     var emoticonc = setting.emoticonCount;
                         Reaction.findAll({
                             where: {
@@ -151,17 +151,17 @@ router.get('/bydate/:date', verification.ver, (req, res) => {
                             raw:true    
                         }).then((result) => {
                             let temp ={};
-                            for(let i=1;i<=setting.emoticonCount;i++){
+                            for(let i=1;i<=5;i++){
                                 let react = new Array(24).fill(0);                             
                                 for(let j=0;j<=23;j++){
                                     result.forEach(el=> {
-                                        if(el.emoticon==i && parseInt(timestamp("HH",el.date))==j){
-                                            console.log(timestamp("HH + ",el.date));
+                                        if(el.emoticon==i && parseInt(timestamp.utc("HH",el.date))==j){
                                             react[j]++;
                                         }
                                     })
                                     if(j==23){
                                 temp[i]=react;
+                                console.log(react);
                                     }
                                 }   
                             }
