@@ -200,7 +200,7 @@ router.get('/countreactions/:date', verification.ver, (req, res) => {
                              group:['emoticon']// yyyymmdd hhmmss 
                         }).then((result) => {
                             let temp = [];
-                            for (let i = 1; i <= emoticonc; i++) {  // folowing code written by carcair
+                            for (let i = 1; i <= 5; i++) {  // folowing code written by carcair
                                 temp[i-1] = 0;
                                 result.forEach((obj, ind) => {   //Counts reactions for each hour
                                     if(result[ind].emoticon == i)
