@@ -17,11 +17,10 @@ Build containers with:
 Start the server with:
 `docker-compose up `
 
-Development is running at http://localhost:80 by default.
+Development is running at http://localhost:8005 & https://localhost:8006 by default
 
-In localhost you need to comment out https server start in app.js
 
-Current working version running @ https://praksans.dyndns.org:80/
+Current working version running @ https://praksans.dyndns.org:8006/
 
 Routes:
 ## Reactions

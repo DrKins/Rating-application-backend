@@ -33,24 +33,23 @@ app.use('/api/settings/', settings);
 app.use('/api/reactions/', reactions);
 app.use('/api/users/', users);
 
-const server = http.createServer(app).listen(config.port, () => {
+ http.createServer(app).listen(config.port, () => {
     console.log(`Listening on ${
         config.port
     }`);
 });
-
-const io = require('socket.io')(server);
-io.on("connection",(socket)=>{ 
-  console.log("korisnik konektovan"+socket);
-})
-  
+ 
 const slack = require('./slack');
 
-
-https.createServer({
+const server = https.createServer({
   key: fs.readFileSync(config.location_key),
   cert: fs.readFileSync(config.location_cert),
   ca: fs.readFileSync(config.location_chain)
 }, app).listen(config.port2, () => {
   console.log(`Listening on ${config.port2}`);
+})
+
+const io = require('socket.io')(server);
+io.on("connection",(socket)=>{ 
+  console.log("korisnik konektovan"+socket);
 })
