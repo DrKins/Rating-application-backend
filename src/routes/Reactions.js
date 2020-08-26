@@ -22,7 +22,7 @@ const verification = require('../methods/VerifyToken');
 router.get('/getreactions', verification.ver, (req, res) => {
     jwt.verify(req.token, config.privkey, (err, AuthData) => {
         if (err) {
-            res.sendStatus(403);
+            res.sendStatus(401);
         } else {
             if (AuthData.lvl > 1) {
                 Reaction.findAll({
@@ -34,7 +34,7 @@ router.get('/getreactions', verification.ver, (req, res) => {
                     res.status(200).end(JSON.stringify(reactions));
                 }).catch(err => console.log(err))
             } else 
-                res.sendStatus(403);  
+                res.sendStatus(401);  
         }
     })
 });
@@ -42,7 +42,7 @@ router.get('/getreactions', verification.ver, (req, res) => {
 router.get('/getreaction/:id', verification.ver, (req, res) => {
     jwt.verify(req.token, config.privkey, (err, AuthData) => {
         if (err) {
-            res.sendStatus(403);
+            res.sendStatus(401);
         } else {
             if (AuthData.lvl > 1) {
                 Reaction.findOne({
@@ -72,7 +72,7 @@ router.get('/getreaction/:id', verification.ver, (req, res) => {
 router.delete('/deletereaction/:id', verification.ver, (req, res) => {
     jwt.verify(req.token, config.privkey, (err, AuthData) => {
         if (err) {
-            res.sendStatus(403);
+            res.sendStatus(401);
         } else {
             if (AuthData.lvl > 1) {
                 Reaction.findOne({
@@ -103,7 +103,7 @@ router.delete('/deletereaction/:id', verification.ver, (req, res) => {
                     }
                 }).catch(err => console.log(err))
             } else 
-                res.sendStatus(403);
+                res.sendStatus(401);
         }
     })
 });
@@ -111,7 +111,7 @@ router.delete('/deletereaction/:id', verification.ver, (req, res) => {
 router.post('/insertreaction', verification.ver, (req, res) => {
     jwt.verify(req.token, config.privkey, (err, AuthData) => {
         if (err) {
-            res.sendStatus(403);
+            res.sendStatus(401);
         } else {
             Reaction.create({emoticon: req.body.emoticon, company: AuthData.company,date : timestamp('YYYYMMDDHHmmss')});
             console.log("Reaction sent");
@@ -123,7 +123,7 @@ router.post('/insertreaction', verification.ver, (req, res) => {
             } catch (error) {
                 res.headr("Content-Type", "text/plain") // removes a warning in firefox
                 console.log(error);
-                res.status(406).end();
+                res.status(401).end();
             }
         }
         
@@ -133,7 +133,7 @@ router.post('/insertreaction', verification.ver, (req, res) => {
 router.get('/bydate/:date', verification.ver, (req, res) => {
     jwt.verify(req.token, config.privkey, (err, AuthData) => {
         if (err) {
-            res.sendStatus(403);
+            res.sendStatus(401);
         } else {
             if (AuthData.lvl > 1) {
                 Settings.findOne({
@@ -172,7 +172,7 @@ router.get('/bydate/:date', verification.ver, (req, res) => {
                         });
                 })
             } else 
-                res.sendStatus(403);
+                res.sendStatus(401);
         }
     })
 });
@@ -180,7 +180,7 @@ router.get('/bydate/:date', verification.ver, (req, res) => {
 router.get('/countreactions/:date', verification.ver, (req, res) => {
     jwt.verify(req.token, config.privkey, (err, AuthData) => {
         if (err) {
-            res.sendStatus(403);
+            res.sendStatus(401);
         } else {
             if (AuthData.lvl > 1) {
                 Settings.findOne({
@@ -215,7 +215,7 @@ router.get('/countreactions/:date', verification.ver, (req, res) => {
                 })
 
             } else 
-                res.sendStatus(403);
+                res.sendStatus(401);
         }
     })
 });

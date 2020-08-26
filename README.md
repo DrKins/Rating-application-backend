@@ -43,6 +43,8 @@ Routes:
 
 `/setsettings` expects object returns 200{"id":1,"poruka":"string","trajanje":int,"brojEmotikona":int}(POST request)
 
+`/setslack` expects object returns 200{"SlackToken":"string","SlackBot":"string","SlackChannel":"string"}(POST request)
+
 ## Users
 `/api/users`
 
@@ -51,6 +53,11 @@ Routes:
 `/login` expects object returns token in format {"token":"string"} {"username":"string","password":"string"}
 
 `/getallusers` expects nothing returns array
+
+
+## Swagger
+
+Swagger docs avalible on http://localhost:8005/api-docs
 
 
 

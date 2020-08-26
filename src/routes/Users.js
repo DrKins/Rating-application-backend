@@ -19,7 +19,7 @@ router.post('/register', verification.ver, async (req, res) => {
 
     jwt.verify(req.token, config.privkey, async (err, AuthData) => {
         if (err) {
-            res.sendStatus(403);
+            res.sendStatus(401);
         } else {
             if (AuthData.lvl > 1) {
                 Settings.findOne({
@@ -54,11 +54,11 @@ router.post('/register', verification.ver, async (req, res) => {
                             console.log("User exist");
                         }
                     }).catch(err => console.log(err))
-                    res.status(400).end();
+                    res.status(406).end();
 
                 }).catch(err => console.log(err))
             } else 
-                res.sendStatus(403);
+                res.sendStatus(401);
         }
     })
 });
@@ -72,7 +72,7 @@ router.post('/login', (req, res) => {
             try {
                     await bcrypt.compare(req.body.password, response.dataValues.password, (err, succes) => {
                         if (err) {
-                            res.sendStatus(403);
+                            res.sendStatus(401);
                         }
                         if (succes == true) {
                             let lvl = response.dataValues.lvl;
@@ -87,7 +87,7 @@ router.post('/login', (req, res) => {
                 } catch {
                     console.log(err);
 
-                    res.sendStatus(500);
+                    res.sendStatus(406);
                 }}
         ).catch(err => {
             console.log(err);
@@ -97,7 +97,7 @@ router.post('/login', (req, res) => {
 router.get('/getallusers', verification.ver, (req, res) => {
     jwt.verify(req.token, config.privkey, (err, AuthData) => {
         if (err) {
-            res.sendStatus(403);
+            res.sendStatus(401);
         } else {
             if (AuthData.lvl == 3) {
                 User.findAll({raw: true}).then(users => {
@@ -120,10 +120,10 @@ router.get('/getallusers', verification.ver, (req, res) => {
                     console.log("All users sent");
                 }).catch(err => {
                     console.log(err);
-                    res.sendStatus(500);
+                    res.sendStatus(406);
                 })
             } else {
-                res.sendStatus(403);
+                res.sendStatus(401);
             }
         }
     })

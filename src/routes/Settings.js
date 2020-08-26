@@ -13,7 +13,7 @@ const router = express.Router();
 router.get('/getsettings', verification.ver, (req, res) => {
     jwt.verify(req.token, config.privkey, (err, AuthData) => {
         if (err) {
-            res.sendStatus(403);
+            res.sendStatus(401);
         } else {
                 Settings.findAll({
                     where: {
@@ -30,7 +30,7 @@ router.get('/getsettings', verification.ver, (req, res) => {
 router.post('/setsettings', verification.ver, (req, res) => {
     jwt.verify(req.token, config.privkey, (err, AuthData) => {
         if (err) {
-            res.sendStatus(403);
+            res.sendStatus(401);
         } else {
             if (AuthData.lvl > 1) {
                 Settings.update({
@@ -48,7 +48,7 @@ router.post('/setsettings', verification.ver, (req, res) => {
                     res.sendStatus(200);
                 }).catch(err => console.log(err))
             } else 
-                res.sendStatus(403);
+                res.sendStatus(401);
         }
     })
 });
@@ -56,7 +56,7 @@ router.post('/setsettings', verification.ver, (req, res) => {
 router.post('/setslack', verification.ver, (req, res) => {
     jwt.verify(req.token, config.privkey, (err, AuthData) => {
         if (err) {
-            res.sendStatus(403);
+            res.sendStatus(401);
         } else {
             if (AuthData.lvl > 1) {
                 Settings.update({
@@ -73,7 +73,7 @@ router.post('/setslack', verification.ver, (req, res) => {
                     res.sendStatus(200);
                 }).catch(err => console.log(err))
             } else 
-                res.sendStatus(403);
+                res.sendStatus(401);
             
 
 

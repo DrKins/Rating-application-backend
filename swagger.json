@@ -1,0 +1,501 @@
+
+  {"swagger": "2.0",
+  "info": {
+    "description": "Backend server for Rating application.",
+    "title": "Rating application backend",
+    "contact": "ramovic.mirzaa@gmail.com"
+  },
+  "host": "localhost:8006",
+  "schemes": ["https", "http"],
+  "paths":{
+    "/api/users/login": {
+        "post": {
+          "tags": ["Users"],
+          "summary": "Login attempt from frontend",
+          "description": "Login attempt",
+          "operationId": "login",
+          "consumes": ["application/json"],
+          "produces": ["application/json"],
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "description": "Username",
+              "required": true,
+              "schema": {
+                "$ref": "#definitions/user"
+              }
+            }
+            
+          ],
+          "responses": {
+            "403": {
+              "description": "Login Denied"
+            },
+            "200": {
+              "description": "Login Successful"
+            }
+          }
+        }
+    },
+    "/api/users/register": {
+        "post": {
+          "tags": ["Users"],
+          "summary": "Attempt to create new user",
+          "description": "Register  attempt",
+          "operationId": "register",
+          "consumes": ["application/json","Authorization"],
+          "produces": ["application/json"],
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "description": "User",
+              "required": true,
+              "schema": {
+                "$ref": "#definitions/reg_user"
+              }
+            },
+            {
+                "in": "headers",
+                "name": "token",
+                "description": "token",
+                "required": true,
+                "schema": {
+                  "$ref": "#definitions/token"
+                }
+              }
+            
+          ],
+          "responses": {
+            "401": {
+              "description": "Unauthorised"
+            },
+            "200": {
+              "description": "User creation successful"
+            },
+            "400": {
+                "description": "User already exists"
+              }
+          }
+        }
+    },
+    "/api/users/getallusers": {
+        "get": {
+          "tags": ["Users"],
+          "summary": "Returns user list based on tennant",
+          "description": "User list",
+          "operationId": "Get all users",
+          "consumes": ["Authorization"],
+          "produces": ["application/json"],
+          "parameters": [
+            {
+                "in": "headers",
+                "name": "token",
+                "description": "token",
+                "required": true,
+                "schema": {
+                  "$ref": "#definitions/token"
+                }
+              }
+            
+          ],
+          "responses": {
+            "401": {
+              "description": "Unauthorised"
+            },
+            "200": {
+              "description": "Users got"
+            },
+            "406": {
+                "description": "Database error"
+              }
+          }
+        }
+    },
+    "/api/settings/getsettings": {
+        "get": {
+          "tags": ["Settings"],
+          "summary": "Returns current settings based on tennant",
+          "description": "Getting settings",
+          "operationId": "Get settings",
+          "consumes": ["Authorization"],
+          "produces": ["application/json"],
+          "parameters": [
+            {
+                "in": "headers",
+                "name": "token",
+                "description": "token",
+                "required": true,
+                "schema": {
+                  "$ref": "#definitions/token"
+                }
+              }
+            
+          ],
+          "responses": {
+            "401": {
+              "description": "Unauthorised"
+            }
+          }
+        }
+    },
+    "/api/settings/setsettings": {
+        "post": {
+          "tags": ["Settings"],
+          "summary": "Changing settings for said tennant",
+          "description": "Setting settings",
+          "operationId": "setsettings",
+          "consumes": ["application/json","Authorization"],
+          "produces": ["application/json"],
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "description": "User",
+              "required": true,
+              "schema": {
+                "$ref": "#definitions/settings"
+              }
+            },
+            {
+                "in": "headers",
+                "name": "token",
+                "description": "token",
+                "required": true,
+                "schema": {
+                  "$ref": "#definitions/token"
+                }
+              }
+            
+          ],
+          "responses": {
+            "401": {
+              "description": "Unauthorised"
+            },
+            "200": {
+              "description": "Settings set"
+            }
+          }
+        }
+    },
+    "/api/settings/setslack": {
+        "post": {
+          "tags": ["Settings"],
+          "summary": "Settings slack-bot settings for tennant",
+          "description": "Setting slack-bot settigns",
+          "operationId": "setslack",
+          "consumes": ["application/json","Authorization"],
+          "produces": ["application/json"],
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "description": "User",
+              "required": true,
+              "schema": {
+                "$ref": "#definitions/slack"
+              }
+            },
+            {
+                "in": "headers",
+                "name": "token",
+                "description": "token",
+                "required": true,
+                "schema": {
+                  "$ref": "#definitions/token"
+                }
+              }
+            
+          ],
+          "responses": {
+            "401": {
+              "description": "Unauthorised"
+            },
+            "200": {
+              "description": "Slack settings set"
+            }
+          }
+        }
+    },
+    "/api/reactions/getreactions": {
+        "get": {
+          "tags": ["Reactions"],
+          "summary": "Returns all reactions for the selected tennant",
+          "description": "Return all reactions",
+          "operationId": "getreactions",
+          "consumes": ["Authorization"],
+          "produces": ["application/json"],
+          "parameters": [
+            {
+                "in": "headers",
+                "name": "token",
+                "description": "token",
+                "required": true,
+                "schema": {
+                  "$ref": "#definitions/token"
+                }
+              }
+            
+          ],
+          "responses": {
+            "401": {
+              "description": "Unauthorised"
+            },
+            "200": {
+              "description": "Reactions got"
+            }
+          }
+        }
+    },
+    "/api/reactions/getreaction/{id}": {
+        "get": {
+          "tags": ["Reactions"],
+          "summary": "Returns the raction with given id if in current tennant",
+          "description": "Return selected reaction",
+          "operationId": "getreaction",
+          "consumes": ["Authorization"],
+          "produces": ["application/json"],
+          "parameters": [
+            {
+                "in": "path",
+                "name": "id",
+                "description": "id",
+                "required": true,
+                "schema": {
+                  "$ref": "#definitions/reaction_id"
+                }
+              },
+            {
+                "in": "headers",
+                "name": "token",
+                "description": "token",
+                "required": true,
+                "schema": {
+                  "$ref": "#definitions/token"
+                }
+              }
+            
+          ],
+          "responses": {
+            "401": {
+              "description": "Unauthorised"
+            },
+            "200": {
+              "description": "Reactions got"
+            }
+          }
+        }
+    },
+    "/api/reactions/insertreaction": {
+        "post": {
+          "tags": ["Reactions"],
+          "summary": "Inserting reaction into database",
+          "description": "Reaction Insertion",
+          "operationId": "insertreaction",
+          "consumes": ["application/json","Authorization"],
+          "produces": ["application/json"],
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "description": "User",
+              "required": true,
+              "schema": {
+                "$ref": "#definitions/reaction"
+              }
+            },
+            {
+                "in": "headers",
+                "name": "token",
+                "description": "token",
+                "required": true,
+                "schema": {
+                  "$ref": "#definitions/token_id"
+                }
+              }
+            
+          ],
+          "responses": {
+            "401": {
+              "description": "Unauthorised"
+            },
+            "200": {
+              "description": "Slack settings set"
+            }
+          }
+        }
+    }, "/api/reactions/bydate/{id}": {
+        "get": {
+          "tags": ["Reactions"],
+          "summary": "Returns report object for the given tennant",
+          "description": "Report creation",
+          "operationId": "bydate",
+          "consumes": ["Authorization"],
+          "produces": ["application/json"],
+          "parameters": [
+            {
+                "in": "path",
+                "name": "id",
+                "description": "id",
+                "required": true,
+                "schema": {
+                  "$ref": "#definitions/reaction_id"
+                }
+              },
+            {
+                "in": "headers",
+                "name": "token",
+                "description": "token",
+                "required": true,
+                "schema": {
+                  "$ref": "#definitions/token"
+                }
+              }
+            
+          ],
+          "responses": {
+            "401": {
+              "description": "Unauthorised"
+            },
+            "200": {
+              "description": "hourly report sent"
+            }
+          }
+        }
+    }, "/api/reactions/countreactions/{id}": {
+        "get": {
+          "tags": ["Reactions"],
+          "summary": "Returns reaction count by type for given date",
+          "description": "Return reaction count",
+          "operationId": "countreactions",
+          "consumes": ["Authorization"],
+          "produces": ["application/json"],
+          "parameters": [
+            {
+                "in": "path",
+                "name": "id",
+                "description": "id",
+                "required": true,
+                "schema": {
+                  "$ref": "#definitions/reaction_id"
+                }
+              },
+            {
+                "in": "headers",
+                "name": "token",
+                "description": "token",
+                "required": true,
+                "schema": {
+                  "$ref": "#definitions/token"
+                }
+              }
+            
+          ],
+          "responses": {
+            "401": {
+              "description": "Unauthorised"
+            },
+            "200": {
+              "description": "Report Sent"
+            }
+          }
+        }
+    }
+  },
+  "definitions":{
+    "user": {
+        "type": "object",
+        "required": ["username","password"],
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "user"
+          },
+          "password":{
+              "type":"string",
+              "example":"password"
+          }
+        }
+      },
+      "reg_user": {
+        "type": "object",
+        "required": ["name","password","lvl","company"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "user"
+          },
+          "password":{
+              "type":"string",
+              "example":"password"
+          },
+          "lvl":{
+              "type":"int",
+              "example":1
+          },
+          "company":{
+              "type":"string",
+              "example":"Test"
+          }
+        }
+      },
+      "token": {
+        "type": "object",
+        "required": ["token"],
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "Bearer <token>"
+          }
+        },
+        "xml": {
+          "name": "token"
+        }
+      },
+      "settings": {
+        "type": "object",
+        "required": ["message","messageDuration","emoticonCount","emoticonPack"],
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Hvala na glasanju"
+          },
+          "messageDuration":{
+              "type":"int",
+              "example":5
+          },
+          "emoticonCount":{
+              "type":"int",
+              "example":3
+          },
+          "emoticonPack":{
+              "type":"string",
+              "example":"yellowPack"
+          }
+        }
+      },
+      "slack": {
+        "type": "object",
+        "required": ["SlackToken","SlackBot","SlackChannel"],
+        "properties": {
+          "SlackToken": {
+            "type": "string",
+            "example": "token"
+          },
+          "SlackBot":{
+              "type":"string",
+              "example":"Welcome-bot"
+          },
+          "SlackChannel":{
+              "type":"string",
+              "example":"random"
+          }
+        }
+      },
+      "reaction_id": {
+        "type": "int",
+        "required": true
+      }
+  }
+}
